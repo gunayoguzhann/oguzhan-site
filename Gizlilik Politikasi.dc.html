@@ -26,7 +26,7 @@
 
   <header style="border-bottom:2px solid #201e1d">
     <div style="max-width:900px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:68px">
-      <a href="Oguzhan Gunay Site.dc.html" style="display:flex;align-items:center;gap:14px">
+      <a href="index.html" style="display:flex;align-items:center;gap:14px">
         <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#ec3013;color:#fff;font-weight:900;font-size:13px;letter-spacing:.04em">NGU</span>
         <span style="font-weight:700;font-size:15px">oguzhangunay.com</span>
       </a>
@@ -150,7 +150,7 @@ class Component extends DCLogic {
       setTr: () => this.setState({ lang: "tr" }),
       setEn: () => this.setState({ lang: "en" }),
       isSiteDoc: isSite, isAppDoc: !isSite,
-      backHref: isSite ? "Oguzhan Gunay Site.dc.html" : "Oguzhan Gunay Site.dc.html?app=" + this.slug(name),
+      backHref: isSite ? "index.html" : "index.html?app=" + this.slug(name),
       docTitle: isKvkk ? (tr ? "KVKK Aydınlatma Metni" : "KVKK Disclosure (Turkish DPA)") : (tr ? "Gizlilik Politikası" : "Privacy Policy"),
       appName: name,
       domain: app.domain || (this.slug(name) + ".oguzhangunay.com"),
@@ -187,3 +187,4 @@ class Component extends DCLogic {
 </script>
 </body>
 </html>
+
