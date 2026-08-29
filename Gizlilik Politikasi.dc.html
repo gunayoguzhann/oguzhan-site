@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-5d6a0a2c-b3e5-427b-a0e3-cf167ea72b11/styles.css">
+<script src="_ds/modernist-5d6a0a2c-b3e5-427b-a0e3-cf167ea72b11/_ds_bundle.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap">
+<style>
+  body { margin:0; background:#f3f2f2; color:#201e1d; font-family:"Archivo",system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  a { color:#201e1d; text-decoration:none; }
+  a:hover { color:#ec3013; }
+  ::selection { background:#ffc4b8; }
+  :focus-visible { outline:2px solid #ec3013; outline-offset:2px; }
+</style>
+</helmet>
+
+<div lang="{{ langAttr }}" style="min-height:100vh;background:#f3f2f2">
+
+  <header style="border-bottom:2px solid #201e1d">
+    <div style="max-width:900px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:68px">
+      <a href="Oguzhan Gunay Site.dc.html" style="display:flex;align-items:center;gap:14px">
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#ec3013;color:#fff;font-weight:900;font-size:13px;letter-spacing:.04em">NGU</span>
+        <span style="font-weight:700;font-size:15px">oguzhangunay.com</span>
+      </a>
+      <div style="display:flex;align-items:center;gap:20px">
+        <a href="{{ backHref }}" style="font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase" style-hover="color:#ae1800"><sc-if value="{{ isSiteDoc }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">← Anasayfaya dön</sc-if><sc-if value="{{ en }}">← Back to home</sc-if></sc-if><sc-if value="{{ isAppDoc }}" hint-placeholder-val="{{ true }}"><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">← Projeye dön</sc-if><sc-if value="{{ en }}">← Back to project</sc-if></sc-if></a>
+        <div style="display:flex;align-items:center;border:2px solid #201e1d;height:36px">
+          <button onClick="{{ setTr }}" style="{{ trBtn }}">TR</button>
+          <button onClick="{{ setEn }}" style="{{ enBtn }}">EN</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width:900px;margin:0 auto;padding:64px 32px 96px">
+    <div style="font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#ec3013;margin-bottom:24px">{{ docTitle }}</div>
+    <h1 style="margin:0;font-weight:900;font-size:clamp(40px,7vw,88px);line-height:0.92;letter-spacing:-0.035em;text-transform:uppercase">{{ appName }}</h1>
+    <p style="margin:20px 0 0;font-size:13px;color:#7d7979"><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Son güncelleme:</sc-if><sc-if value="{{ en }}">Last updated:</sc-if> {{ updated }} · {{ domain }}</p>
+
+    <div style="height:2px;background:#201e1d;margin:40px 0 0"></div>
+
+    <sc-if value="{{ hasCustom }}" hint-placeholder-val="{{ false }}">
+      <sc-for list="{{ customParas }}" as="c" hint-placeholder-count="3">
+        <p style="margin:28px 0 0;font-size:16px;line-height:1.7;max-width:64ch;text-wrap:pretty">{{ c.text }}</p>
+      </sc-for>
+    </sc-if>
+
+    <sc-if value="{{ noCustom }}" hint-placeholder-val="{{ true }}">
+      <sc-for list="{{ sections }}" as="s" hint-placeholder-count="8">
+        <section style="padding:32px 0;border-bottom:1px solid #d7d3d3">
+          <h2 style="margin:0 0 12px;font-size:18px;font-weight:800;letter-spacing:-0.01em">{{ s.n }}. {{ s.title }}</h2>
+          <p style="margin:0;font-size:15px;line-height:1.7;color:#444141;max-width:64ch;text-wrap:pretty">{{ s.body }}</p>
+        </section>
+      </sc-for>
+    </sc-if>
+
+    <div style="margin-top:40px;border:2px solid #201e1d;padding:24px;display:flex;flex-direction:column;gap:6px;align-items:flex-start">
+      <span style="font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#ec3013"><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">İletişim</sc-if><sc-if value="{{ en }}">Contact</sc-if></span>
+      <p style="margin:0;font-size:15px;line-height:1.6"><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Bu politikayla ilgili sorularınız için:</sc-if><sc-if value="{{ en }}">For questions about this policy:</sc-if></p>
+      <a href="mailto:info@oguzhangunay.com" style="font-size:15px;font-weight:700;color:#ae1800">info@oguzhangunay.com</a>
+    </div>
+  </main>
+
+  <footer style="border-top:2px solid #201e1d">
+    <div style="max-width:900px;margin:0 auto;padding:24px 32px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between">
+      <span style="font-size:13px;color:#605d5d">© 2026 Oğuzhan Günay</span>
+      <span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#ec3013">NGU</span>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { cms: null, lang: "tr" };
+
+  componentDidMount() {
+    try {
+      const c = localStorage.getItem("ngu-site-content");
+      this.setState({ cms: c ? JSON.parse(c) : null });
+    } catch (e) {}
+  }
+
+  slug(t) {
+    return (t || "").toLowerCase()
+      .replace(/ç/g, "c").replace(/ğ/g, "g").replace(/ı/g, "i")
+      .replace(/ö/g, "o").replace(/ş/g, "s").replace(/ü/g, "u")
+      .replace(/[^a-z0-9]/g, "");
+  }
+
+  renderVals() {
+    const cms = this.state.cms || {};
+    const defaults = [
+      { name: "Optiva", domain: "optiva.oguzhangunay.com", privacy: "" },
+      { name: "Picolori", domain: "picolori.oguzhangunay.com", privacy: "" }
+    ];
+    const projects = (cms.projects && cms.projects.length) ? cms.projects : defaults;
+    let want = "", doc = "";
+    try {
+      const q = new URLSearchParams(window.location.search);
+      want = q.get("app") || "";
+      doc = q.get("doc") || "";
+    } catch (e) {}
+    const isSite = want === "site";
+    const app = isSite
+      ? { name: "oguzhangunay.com", domain: "oguzhangunay.com", privacy: "", kvkk: "" }
+      : (projects.find((p) => this.slug(p.name) === want) || projects[0]);
+    const name = app.name || "Uygulama";
+    const kvkkText = (app.kvkk || "").trim();
+    const isKvkk = doc === "kvkk";
+    const custom = isKvkk ? kvkkText : (app.privacy || "").trim();
+    const tr = this.state.lang === "tr";
+    const moTr = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+    const moEn = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const d = new Date();
+    const seg = (on) =>
+      "background:" + (on ? "#201e1d" : "transparent") + ";color:" + (on ? "#f3f2f2" : "#201e1d") +
+      ";border:0;padding:0 12px;height:100%;font-size:12px;font-weight:700;letter-spacing:.08em;cursor:pointer";
+    const secTr = [
+      { title: "Giriş", body: name + " uygulaması, Oğuzhan Günay tarafından geliştirilmekte ve yayınlanmaktadır. Bu politika, uygulamayı kullandığınızda hangi verilerin toplandığını ve nasıl kullanıldığını açıklar. Uygulamayı kullanarak bu politikayı kabul etmiş sayılırsınız." },
+      { title: "Toplanan Veriler", body: name + ", yalnızca uygulamanın çalışması için gerekli olan asgari veriyi toplar. Hesap oluşturmadan kullanılan özelliklerde kişisel veri toplanmaz; cihazda saklanan veriler (ayarlar, kayıtlar) cihazınızda kalır." },
+      { title: "Verilerin Kullanımı", body: "Toplanan veriler yalnızca uygulama özelliklerini sunmak, hataları gidermek ve deneyimi iyileştirmek için kullanılır. Verileriniz reklam amacıyla satılmaz veya kiralanmaz." },
+      { title: "Üçüncü Taraflar", body: "Uygulama; çökme raporları ve anonim kullanım istatistikleri için üçüncü taraf hizmetler kullanabilir. Bu hizmetler kendi gizlilik politikalarına tabidir ve kişisel kimlik bilgisi paylaşılmaz." },
+      { title: "Veri Güvenliği", body: "Verileriniz endüstri standardı yöntemlerle korunur. İnternet üzerinden hiçbir aktarım %100 güvenli olmasa da verilerinizi korumak için makul teknik ve idari önlemler alınır." },
+      { title: "Çocukların Gizliliği", body: name + ", 13 yaş altı çocuklardan bilerek kişisel veri toplamaz. Böyle bir durum fark edilirse ilgili veri derhâl silinir." },
+      { title: "Politikadaki Değişiklikler", body: "Bu politika zaman zaman güncellenebilir. Değişiklikler bu sayfada yayınlanır; önemli değişikliklerde uygulama içinden bilgilendirme yapılır." },
+      { title: "Veri Silme Talebi", body: "Verilerinizin silinmesini istiyorsanız aşağıdaki e-posta adresinden bize ulaşabilirsiniz. Talebiniz en geç 30 gün içinde sonuçlandırılır." }
+    ];
+    const secEn = [
+      { title: "Introduction", body: "The " + name + " app is developed and published by Oğuzhan Günay. This policy explains what data is collected when you use the app and how it is used. By using the app you accept this policy." },
+      { title: "Data We Collect", body: name + " collects only the minimum data required for the app to function. Features used without an account collect no personal data; data stored on your device (settings, records) stays on your device." },
+      { title: "How Data Is Used", body: "Collected data is used only to provide app features, fix bugs and improve the experience. Your data is never sold or rented for advertising purposes." },
+      { title: "Third Parties", body: "The app may use third-party services for crash reports and anonymous usage statistics. These services are subject to their own privacy policies and no personally identifiable information is shared." },
+      { title: "Data Security", body: "Your data is protected with industry-standard methods. While no transmission over the internet is 100% secure, reasonable technical and administrative measures are taken to protect your data." },
+      { title: "Children's Privacy", body: name + " does not knowingly collect personal data from children under 13. If such a case is discovered, the data is deleted immediately." },
+      { title: "Changes to This Policy", body: "This policy may be updated from time to time. Changes are published on this page; significant changes are announced within the app." },
+      { title: "Data Deletion Requests", body: "If you want your data deleted, contact us at the email address below. Requests are completed within 30 days at the latest." }
+    ];
+
+    return {
+      tr, en: !tr, langAttr: tr ? "tr" : "en",
+      trBtn: seg(tr), enBtn: seg(!tr),
+      setTr: () => this.setState({ lang: "tr" }),
+      setEn: () => this.setState({ lang: "en" }),
+      isSiteDoc: isSite, isAppDoc: !isSite,
+      backHref: isSite ? "Oguzhan Gunay Site.dc.html" : "Oguzhan Gunay Site.dc.html?app=" + this.slug(name),
+      docTitle: isKvkk ? (tr ? "KVKK Aydınlatma Metni" : "KVKK Disclosure (Turkish DPA)") : (tr ? "Gizlilik Politikası" : "Privacy Policy"),
+      appName: name,
+      domain: app.domain || (this.slug(name) + ".oguzhangunay.com"),
+      updated: tr
+        ? d.getDate() + " " + moTr[d.getMonth()] + " " + d.getFullYear()
+        : moEn[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear(),
+      hasCustom: !!custom, noCustom: !custom,
+      customParas: custom.split(/\n\s*\n|\n/).filter(Boolean).map((t) => ({ text: t })),
+      sections: (isKvkk
+        ? (tr ? [
+            { title: "Veri Sorumlusu", body: "6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) uyarınca kişisel verileriniz, veri sorumlusu sıfatıyla Oğuzhan Günay tarafından aşağıda açıklanan kapsamda işlenmektedir. Bu aydınlatma metni " + name + " uygulaması için hazırlanmıştır." },
+            { title: "İşlenen Kişisel Veriler", body: name + " kapsamında; cihaz bilgileri, anonim kullanım istatistikleri ve iletişim kanalları üzerinden ilettiğiniz ad-soyad ile e-posta adresi işlenebilir." },
+            { title: "İşleme Amaçları", body: "Kişisel veriler; uygulamanın çalıştırılması, hataların giderilmesi, kullanıcı taleplerinin yanıtlanması ve yasal yükümlülüklerin yerine getirilmesi amaçlarıyla işlenir." },
+            { title: "Hukuki Sebep", body: "Veriler; KVKK m.5'te yer alan sözleşmenin kurulması ve ifası, hukuki yükümlülüğün yerine getirilmesi ve meşru menfaat hukuki sebeplerine dayanılarak işlenir." },
+            { title: "Verilerin Aktarımı", body: "Kişisel veriler pazarlama amacıyla üçüncü kişilere aktarılmaz; yalnızca yasal zorunluluk hâlinde yetkili kurum ve kuruluşlarla paylaşılır." },
+            { title: "Saklama Süresi", body: "Veriler, işleme amacının gerektirdiği süre ve yasal saklama süreleri boyunca saklanır; sürenin sonunda silinir, yok edilir veya anonim hâle getirilir." },
+            { title: "İlgili Kişinin Hakları", body: "KVKK m.11 uyarınca; kişisel verinizin işlenip işlenmediğini öğrenme, işlenmişse bilgi talep etme, düzeltilmesini veya silinmesini isteme, aktarıldığı üçüncü kişileri bilme ve zararın giderilmesini talep etme haklarına sahipsiniz." },
+            { title: "Başvuru", body: "Haklarınıza ilişkin taleplerinizi aşağıdaki e-posta adresi üzerinden iletebilirsiniz. Başvurular en geç 30 gün içinde ücretsiz olarak sonuçlandırılır." }
+          ] : [
+            { title: "Data Controller", body: "Under Turkish Law No. 6698 on the Protection of Personal Data (KVKK), your personal data is processed by Oğuzhan Günay as data controller within the scope described below. This notice was prepared for the " + name + " app." },
+            { title: "Personal Data Processed", body: "Within " + name + ", device information, anonymous usage statistics and the name and email address you provide through contact channels may be processed." },
+            { title: "Purposes of Processing", body: "Personal data is processed to operate the app, fix bugs, respond to user requests and fulfil legal obligations." },
+            { title: "Legal Basis", body: "Data is processed based on the legal grounds in Article 5 of the KVKK: establishment and performance of a contract, compliance with legal obligations and legitimate interest." },
+            { title: "Data Transfers", body: "Personal data is not transferred to third parties for marketing purposes; it is shared only with authorised institutions when legally required." },
+            { title: "Retention Period", body: "Data is retained for as long as the processing purpose requires and for statutory retention periods; it is then deleted, destroyed or anonymised." },
+            { title: "Rights of the Data Subject", body: "Under Article 11 of the KVKK you have the right to learn whether your data is processed, request information, request correction or deletion, know the third parties it is transferred to, and claim compensation for damages." },
+            { title: "Applications", body: "You may submit requests regarding your rights via the email address below. Applications are concluded free of charge within 30 days at the latest." }
+          ])
+        : (tr ? secTr : secEn)
+      ).map((s, i) => ({ ...s, n: i + 1 }))
+    };
+  }
+}
+</script>
+</body>
+</html>
