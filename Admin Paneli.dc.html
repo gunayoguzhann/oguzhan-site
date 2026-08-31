@@ -425,7 +425,7 @@
 
     <sc-if value="{{ isLinks }}">
       <div style="display:flex;flex-direction:column;gap:24px;max-width:820px">
-        <p style="margin:0;font-size:14px;line-height:1.6;color:#605d5d;max-width:64ch">Her sayfanın Türkçe ve İngilizce ayrı bir adresi olsun — örneğin anasayfa için <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px">/anasayfa</span> (TR) ve <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px">/home</span> (EN). Sadece küçük harf ve rakam kullan, boşluk ve Türkçe karakterler otomatik temizlenir.</p>
+        <p style="margin:0;font-size:14px;line-height:1.6;color:#605d5d;max-width:64ch">Her sayfanın Türkçe ve İngilizce ayrı bir adresi olsun — örneğin anasayfa için <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px">/anasayfa</span> (TR) ve <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px">/home</span> (EN). Sadece küçük harf ve rakam kullan, boşluk ve Türkçe karakterler otomatik temizlenir. Bir linki değiştirsen bile eski adres kırılmaz, otomatik olarak çalışmaya devam eder.</p>
         <div style="display:flex;flex-direction:column;border-top:2px solid #201e1d">
           <sc-for list="{{ linksList }}" as="r" hint-placeholder-count="4">
             <div style="display:grid;grid-template-columns:110px 1fr 1fr;gap:16px;align-items:start;padding:18px 0;border-bottom:1px solid #d7d3d3">

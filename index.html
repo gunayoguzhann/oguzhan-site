@@ -475,7 +475,7 @@ class Component extends DCLogic {
     } catch (e) {}
 
     try {
-      const match = this.matchRoute(window.location.pathname, this.getRoutesFrom(c || {}));
+      const match = this.matchRoute(window.location.pathname, this.getRoutesFrom(c || {}), c && c.routeAliases);
       if (match) this.setState({ page: match.page, lang: match.lang });
     } catch (e) {}
 
@@ -512,12 +512,16 @@ class Component extends DCLogic {
     return out;
   }
 
-  matchRoute(pathname, routes) {
+  matchRoute(pathname, routes, aliases) {
     const slug = (pathname || "/").replace(/^\/+|\/+$/g, "").toLowerCase();
     if (!slug) return null;
     for (const p of Object.keys(routes)) {
       if (routes[p].tr.toLowerCase() === slug) return { page: p, lang: "tr" };
       if (routes[p].en.toLowerCase() === slug) return { page: p, lang: "en" };
+    }
+    if (Array.isArray(aliases)) {
+      const hit = aliases.find((a) => (a.slug || "").toLowerCase() === slug);
+      if (hit) return { page: hit.page, lang: hit.lang };
     }
     return null;
   }
@@ -538,7 +542,8 @@ class Component extends DCLogic {
   }
 
   handlePopState() {
-    const match = this.matchRoute(window.location.pathname, this.getRoutesFrom(this.state.cms || {}));
+    const cms = this.state.cms || {};
+    const match = this.matchRoute(window.location.pathname, this.getRoutesFrom(cms), cms.routeAliases);
     this.setState(match ? { page: match.page, lang: match.lang } : { page: "home" });
   }
 
