@@ -817,7 +817,7 @@ class Component extends DCLogic {
             const res = await fetch("/api/messages", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ name, email, body })
+              body: JSON.stringify({ name, email, body, lang: tr ? "tr" : "en" })
             });
             if (!res.ok) throw new Error();
             this.setState({ sent: true, formError: null });

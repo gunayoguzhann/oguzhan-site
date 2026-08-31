@@ -2,7 +2,7 @@
 // GET/PUT require an authenticated admin session (the admin panel reads
 // and updates the inbox).
 import { requireAuth, json } from "../_lib/auth.js";
-import { sendEmail, emailTemplate } from "../_lib/email.js";
+import { sendEmail, emailTemplate, getSiteNavLinks } from "../_lib/email.js";
 
 const MAX_MESSAGES = 500;
 
@@ -27,6 +27,7 @@ export async function onRequestPost({ request, env }) {
   const name = typeof body.name === "string" ? body.name.slice(0, 200) : "";
   const email = typeof body.email === "string" ? body.email.slice(0, 200) : "";
   const text = typeof body.body === "string" ? body.body.slice(0, 4000) : "";
+  const lang = body.lang === "en" ? "en" : "tr";
   if (!text.trim()) return json({ error: "Mesaj boş olamaz." }, { status: 400 });
 
   const raw = await env.SITE_KV.get("site:messages");
@@ -38,6 +39,7 @@ export async function onRequestPost({ request, env }) {
     name: name || "İsimsiz",
     email: email || "—",
     body: text,
+    lang,
     date: `${d.getDate()} ${mo[d.getMonth()]}`,
     read: false,
     open: false,
@@ -69,6 +71,7 @@ export async function onRequestPost({ request, env }) {
           bodyHtml,
           ctaLabel: "Admin Panelini Aç",
           ctaUrl: `${origin}/admin`,
+          navLinks: await getSiteNavLinks(env, lang),
         }),
       });
     }

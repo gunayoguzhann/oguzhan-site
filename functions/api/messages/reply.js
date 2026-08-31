@@ -2,7 +2,7 @@
 // from the site's own address straight to the visitor, so the admin never
 // has to leave the panel or use their personal mail client.
 import { requireAuth, json } from "../../_lib/auth.js";
-import { sendEmail, emailTemplate } from "../../_lib/email.js";
+import { sendEmail, emailTemplate, getSiteNavLinks } from "../../_lib/email.js";
 
 const MAX_MESSAGES = 500;
 
@@ -54,6 +54,7 @@ export async function onRequestPost({ request, env }) {
         preheader: reply.slice(0, 120),
         title: "Mesajına bir yanıt geldi",
         bodyHtml,
+        navLinks: await getSiteNavLinks(env, message.lang === "en" ? "en" : "tr"),
       }),
     });
   } catch (e) {

@@ -20,10 +20,50 @@ async function sendEmail(env, { to, subject, html, replyTo }) {
   return res.json();
 }
 
+// Home/Projects/About slugs used to build the footer nav row, mirroring the
+// admin-editable routes in site:content (functions/api/content.js). Falls
+// back to these when the admin hasn't customized a route yet.
+const DEFAULT_ROUTES = {
+  home: { tr: "anasayfa", en: "home" },
+  projects: { tr: "projeler", en: "projects" },
+  about: { tr: "hakkinda", en: "about" },
+};
+
+const NAV_LABELS = {
+  tr: { home: "Anasayfa", projects: "Projeler", about: "Hakkında" },
+  en: { home: "Home", projects: "Projects", about: "About" },
+};
+
+// Reads the site's current (possibly admin-renamed) page slugs so the email
+// footer's nav links always match what's actually live, in whichever
+// language the triggering action happened in.
+async function getSiteNavLinks(env, lang) {
+  const safeLang = lang === "en" ? "en" : "tr";
+  let routes = DEFAULT_ROUTES;
+  try {
+    const raw = await env.SITE_KV.get("site:content");
+    const content = raw ? JSON.parse(raw) : null;
+    if (content && content.routes) {
+      routes = {
+        home: { ...DEFAULT_ROUTES.home, ...(content.routes.home || {}) },
+        projects: { ...DEFAULT_ROUTES.projects, ...(content.routes.projects || {}) },
+        about: { ...DEFAULT_ROUTES.about, ...(content.routes.about || {}) },
+      };
+    }
+  } catch (e) {}
+  const labels = NAV_LABELS[safeLang];
+  const slug = (page) => routes[page][safeLang] || DEFAULT_ROUTES[page][safeLang];
+  return [
+    { key: "home", label: labels.home, href: `https://oguzhangunay.com/${slug("home")}` },
+    { key: "projects", label: labels.projects, href: `https://oguzhangunay.com/${slug("projects")}` },
+    { key: "about", label: labels.about, href: `https://oguzhangunay.com/${slug("about")}` },
+  ];
+}
+
 // Shared branded layout for every transactional email the site sends.
 // Table-based markup on purpose: it's the layout style that renders
 // consistently across Outlook/Gmail/Apple Mail, unlike flexbox/grid.
-function emailTemplate({ preheader = "", title, bodyHtml, ctaLabel, ctaUrl }) {
+function emailTemplate({ preheader = "", title, bodyHtml, ctaLabel, ctaUrl, navLinks }) {
   const cta = ctaUrl
     ? `<tr><td style="padding:4px 40px 32px">
          <table role="presentation" cellpadding="0" cellspacing="0"><tr>
@@ -33,6 +73,25 @@ function emailTemplate({ preheader = "", title, bodyHtml, ctaLabel, ctaUrl }) {
          </tr></table>
        </td></tr>`
     : "";
+
+  const nav =
+    Array.isArray(navLinks) && navLinks.length
+      ? `<tr><td style="padding:4px 40px 28px">
+           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;border:2px solid #201e1d">
+             <tr>
+               ${navLinks
+                 .map(
+                   (n, i) => `<td width="${Math.round(100 / navLinks.length)}%" style="background:#ffcf40;padding:14px 12px;vertical-align:top${i < navLinks.length - 1 ? ";border-right:2px solid #201e1d" : ""}">
+                     <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:10px;font-weight:800;color:#201e1d;letter-spacing:.08em">0${i + 1}</div>
+                     <a href="${n.href}" style="display:block;margin-top:6px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;font-weight:800;color:#201e1d;text-decoration:none">${n.label} →</a>
+                   </td>`
+                 )
+                 .join("")}
+             </tr>
+           </table>
+         </td></tr>`
+      : "";
+
   return `<!doctype html>
 <html lang="tr">
 <head>
@@ -57,10 +116,14 @@ function emailTemplate({ preheader = "", title, bodyHtml, ctaLabel, ctaUrl }) {
         <tr><td style="padding:32px 40px 6px;font-size:19px;font-weight:800;color:#201e1d">${title}</td></tr>
         <tr><td style="padding:6px 40px 8px;font-size:14px;line-height:1.7;color:#3c3a3a">${bodyHtml}</td></tr>
         ${cta}
-        <tr><td style="padding:24px 40px 28px">
+        ${nav}
+        <tr><td style="padding:8px 40px 24px">
           <div style="border-top:1px solid #d7d3d3;padding-top:16px;font-size:11px;line-height:1.6;color:#9a9696;letter-spacing:.02em">
             Bu e-posta oguzhangunay.com üzerinden otomatik olarak gönderildi.
           </div>
+        </td></tr>
+        <tr><td style="background:#ec3013;padding:26px 40px">
+          <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-weight:900;font-size:26px;line-height:1.05;letter-spacing:-0.01em;color:#ffffff">NEVER<br>GIVE UP</p>
         </td></tr>
       </table>
     </td></tr>
@@ -69,4 +132,4 @@ function emailTemplate({ preheader = "", title, bodyHtml, ctaLabel, ctaUrl }) {
 </html>`;
 }
 
-export { sendEmail, emailTemplate };
+export { sendEmail, emailTemplate, getSiteNavLinks };

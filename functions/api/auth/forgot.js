@@ -1,5 +1,5 @@
 import { json, RESET_TTL_SECONDS } from "../../_lib/auth.js";
-import { sendEmail, emailTemplate } from "../../_lib/email.js";
+import { sendEmail, emailTemplate, getSiteNavLinks } from "../../_lib/email.js";
 
 export async function onRequestPost({ request, env }) {
   let body;
@@ -40,6 +40,7 @@ export async function onRequestPost({ request, env }) {
           `<p style="margin:0;font-size:12px;color:#9a9696">Bu bağlantı 15 dakika geçerlidir. Bu isteği sen yapmadıysan bu e-postayı yok sayabilirsin, şifren değişmeyecektir.</p>`,
         ctaLabel: "Şifreni Sıfırla",
         ctaUrl: resetUrl,
+        navLinks: await getSiteNavLinks(env, "tr"),
       }),
     });
   } catch (e) {
