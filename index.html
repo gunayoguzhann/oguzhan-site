@@ -45,6 +45,25 @@
   @media (max-width:400px){
     .container{ padding-left:16px !important; padding-right:16px !important; }
   }
+
+  .ngu-overlay{ animation: nguFadeIn .25s ease both; }
+  .ngu-glow{ animation: nguGlow 2.6s ease-out both; }
+  .ngu-mark{ animation: nguPop .7s cubic-bezier(.2,.9,.25,1.15) both; }
+  .ngu-sub{ animation: nguSub .5s ease .55s both; }
+  @keyframes nguFadeIn{ from{ opacity:0 } to{ opacity:1 } }
+  @keyframes nguGlow{
+    0%{ opacity:0; transform:scale(.55) }
+    16%{ opacity:1; transform:scale(1.25) }
+    45%{ opacity:.5; transform:scale(1) }
+    100%{ opacity:0; transform:scale(1) }
+  }
+  @keyframes nguPop{
+    0%{ transform:scale(2.4); opacity:0; letter-spacing:.5em }
+    55%{ transform:scale(.96); opacity:1; letter-spacing:.02em }
+    75%{ transform:scale(1.04) }
+    100%{ transform:scale(1); letter-spacing:.06em }
+  }
+  @keyframes nguSub{ from{ opacity:0; transform:translateY(10px) } to{ opacity:1; transform:translateY(0) } }
 </style>
 </helmet>
 
@@ -53,7 +72,7 @@
   <header style="position:sticky;top:0;z-index:20;background:#f3f2f2;border-bottom:2px solid #201e1d">
     <div class="container" style="max-width:1320px;margin:0 auto;padding:0 32px;display:flex;align-items:stretch;justify-content:space-between;gap:32px;height:68px">
       <a href="#top" style="display:flex;align-items:center;gap:14px">
-        <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#ec3013;color:#fff;font-weight:900;font-size:13px;letter-spacing:.04em">NGU</span>
+        <span onClick="{{ triggerNguAnim }}" style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#ec3013;color:#fff;font-weight:900;font-size:13px;letter-spacing:.04em;cursor:pointer">NGU</span>
         <span style="font-weight:700;font-size:15px;letter-spacing:-0.01em">Oğuzhan Günay</span>
       </a>
       <nav class="nav-desktop" style="display:flex;align-items:center;gap:0">
@@ -69,6 +88,16 @@
       <button onClick="{{ toggleMenu }}" class="nav-toggle" aria-label="{{ menuAriaLabel }}" aria-expanded="{{ menuOpenAttr }}" style="{{ toggleBtnStyle }}">{{ menuIcon }}</button>
     </div>
   </header>
+
+  <sc-if value="{{ nguAnimOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeNguAnim }}" class="ngu-overlay" style="position:fixed;inset:0;z-index:9999;background:#201e1d;display:flex;align-items:center;justify-content:center;cursor:pointer">
+      <div style="position:relative;display:flex;flex-direction:column;align-items:center">
+        <div class="ngu-glow" style="position:absolute;inset:-60% -20%;border-radius:50%;background:radial-gradient(circle,rgba(236,48,19,0.55) 0%,rgba(236,48,19,0) 65%);filter:blur(6px);pointer-events:none"></div>
+        <span class="ngu-mark" style="position:relative;font-weight:900;font-size:clamp(72px,16vw,240px);line-height:1;letter-spacing:.06em;color:#fff">NGU</span>
+        <span class="ngu-sub" style="position:relative;margin-top:18px;font-size:clamp(13px,2vw,20px);font-weight:700;letter-spacing:.4em;text-transform:uppercase;color:#ec3013">never give up</span>
+      </div>
+    </div>
+  </sc-if>
 
   <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
   <div class="mobile-menu-panel" style="position:fixed;top:68px;left:0;right:0;bottom:0;z-index:19;background:#f3f2f2;overflow-y:auto;border-top:2px solid #201e1d">
@@ -427,7 +456,7 @@
       <div style="display:flex;align-items:center;gap:24px">
         <a href="Gizlilik Politikasi.dc.html?app=site" style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#605d5d" style-hover="color:#ae1800"><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Gizlilik Politikası</sc-if><sc-if value="{{ en }}">Privacy Policy</sc-if></a>
         <a href="Gizlilik Politikasi.dc.html?app=site&doc=kvkk" style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#605d5d" style-hover="color:#ae1800">KVKK</a>
-        <span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#ec3013">NGU</span>
+        <span onClick="{{ triggerNguAnim }}" style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#ec3013;cursor:pointer">NGU</span>
       </div>
     </div>
   </footer>
@@ -435,7 +464,7 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;defaultLang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;tr&quot;,&quot;en&quot;],&quot;default&quot;:&quot;tr&quot;,&quot;tsType&quot;:&quot;'tr' | 'en'&quot;},&quot;showClosingBanner&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
 class Component extends DCLogic {
-  state = { lang: null, page: "home", proj: 0, sent: false, sendError: false, name: "", mail: "", msg: "", cms: null, menuOpen: false };
+  state = { lang: null, page: "home", proj: 0, sent: false, sendError: false, name: "", mail: "", msg: "", cms: null, menuOpen: false, nguAnimOpen: false };
 
   async componentDidMount() {
     let c = null;
@@ -467,6 +496,18 @@ class Component extends DCLogic {
 
   toggleMenu() {
     this.setState((s) => ({ menuOpen: !s.menuOpen }));
+  }
+
+  triggerNguAnim(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    this.setState({ nguAnimOpen: true });
+    clearTimeout(this._nguT);
+    this._nguT = setTimeout(() => this.setState({ nguAnimOpen: false }), 2800);
+  }
+
+  closeNguAnim() {
+    clearTimeout(this._nguT);
+    this.setState({ nguAnimOpen: false });
   }
 
   renderVals() {
@@ -603,6 +644,9 @@ class Component extends DCLogic {
       menuAriaLabel: tr ? (this.state.menuOpen ? "Menüyü kapat" : "Menüyü aç") : (this.state.menuOpen ? "Close menu" : "Open menu"),
       toggleBtnStyle: "background:" + (this.state.menuOpen ? "#201e1d" : "transparent") + ";color:" + (this.state.menuOpen ? "#f3f2f2" : "#201e1d"),
       toggleMenu: () => this.toggleMenu(),
+      nguAnimOpen: this.state.nguAnimOpen,
+      triggerNguAnim: (e) => this.triggerNguAnim(e),
+      closeNguAnim: () => this.closeNguAnim(),
       goHome: () => this.go("home"), goAbout: () => this.go("about"),
       goProjects: () => this.go("projects"), goContact: () => this.go("contact"),
       accounts: (cms.accounts && cms.accounts.length) ? cms.accounts.map((a) => ({
