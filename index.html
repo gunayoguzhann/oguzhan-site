@@ -556,12 +556,39 @@ class Component extends DCLogic {
     this.setState(match ? { page: match.page, lang: match.lang } : { page: "home" });
   }
 
+  currentSubdomainProject() {
+    if (typeof window === "undefined") return -1;
+    const projects = (this.state.cms && this.state.cms.projects) || [];
+    return this.matchProjectDomain(window.location.hostname, projects);
+  }
+
   openProject(i) {
+    const subIdx = this.currentSubdomainProject();
+    if (subIdx >= 0 && subIdx !== i) {
+      const projects = (this.state.cms && this.state.cms.projects) || [];
+      const target = projects[i];
+      // A different project's subdomain — send the visitor to its own
+      // address instead of showing it under this project's domain.
+      if (target && target.domain && typeof window !== "undefined") {
+        window.location.href = "https://" + target.domain + "/";
+        return;
+      }
+    }
     this.setState({ page: "project", proj: i });
     if (typeof window !== "undefined") window.scrollTo(0, 0);
   }
 
   go(page) {
+    if (page !== "project" && this.currentSubdomainProject() >= 0) {
+      const routes = this.getRoutesFrom(this.state.cms || {});
+      const slug = routes[page] && routes[page][this.currentLangCode()];
+      // On a project's own subdomain, the main site's sections (Home,
+      // About, Projects, Contact) belong on the main domain, not here.
+      if (slug && typeof window !== "undefined") {
+        window.location.href = "https://oguzhangunay.com/" + slug;
+        return;
+      }
+    }
     this.setState({ page, menuOpen: false });
     if (typeof window !== "undefined") {
       window.scrollTo(0, 0);
