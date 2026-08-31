@@ -455,8 +455,8 @@
     <div class="container" style="max-width:1320px;margin:0 auto;padding:28px 32px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between">
       <span style="font-size:13px;color:#605d5d">© 2026 Oğuzhan Günay — oguzhangunay.com</span>
       <div style="display:flex;align-items:center;gap:24px">
-        <a href="Gizlilik Politikasi.dc.html?app=site" style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#605d5d" style-hover="color:#ae1800"><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Gizlilik Politikası</sc-if><sc-if value="{{ en }}">Privacy Policy</sc-if></a>
-        <a href="Gizlilik Politikasi.dc.html?app=site&doc=kvkk" style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#605d5d" style-hover="color:#ae1800">KVKK</a>
+        <a href="{{ sitePrivacyHref }}" style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#605d5d" style-hover="color:#ae1800"><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Gizlilik Politikası</sc-if><sc-if value="{{ en }}">Privacy Policy</sc-if></a>
+        <a href="{{ siteKvkkHref }}" style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#605d5d" style-hover="color:#ae1800">KVKK</a>
         <span onClick="{{ triggerNguAnim }}" style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#ec3013;cursor:pointer">NGU</span>
       </div>
     </div>
@@ -790,6 +790,8 @@ class Component extends DCLogic {
             { label: "E-posta", handle: "info@oguzhangunay.com", href: "mailto:info@oguzhangunay.com" }
           ],
       projIntro: tr ? (cms.projectsIntro || "Her uygulamanın kendi gizlilik politikası sayfası, alt alan adı üzerinden yayınlanır.") : "Each app publishes its privacy policy on its own subdomain.",
+      sitePrivacyHref: tr ? "/gizlilikpolitikasi" : "/privacypolicy",
+      siteKvkkHref: tr ? "/kvkk" : "/kvkkdisclosure",
       projects: projects.map((p, i) => ({ ...p, open: () => this.openProject(i) })),
       sent: this.state.sent, notSent: !this.state.sent,
       fName: this.state.name, fMail: this.state.mail, fMsg: this.state.msg,

@@ -132,8 +132,12 @@ class Component extends DCLogic {
   updateCleanPathLang(langCode) {
     if (typeof window === "undefined") return;
     const path = (window.location.pathname || "").replace(/^\/+|\/+$/g, "").toLowerCase();
-    if (path !== "gizlilikpolitikasi" && path !== "privacypolicy") return;
-    const newPath = "/" + (langCode === "tr" ? "gizlilikpolitikasi" : "privacypolicy");
+    const isKvkkPath = path === "kvkk" || path === "kvkkdisclosure";
+    const isPrivacyPath = path === "gizlilikpolitikasi" || path === "privacypolicy";
+    if (!isKvkkPath && !isPrivacyPath) return;
+    const newPath = "/" + (isKvkkPath
+      ? (langCode === "tr" ? "kvkk" : "kvkkdisclosure")
+      : (langCode === "tr" ? "gizlilikpolitikasi" : "privacypolicy"));
     if (window.location.pathname !== newPath) {
       window.history.pushState({}, "", newPath + window.location.search);
     }
@@ -142,8 +146,8 @@ class Component extends DCLogic {
   async componentDidMount() {
     try {
       const path = (window.location.pathname || "").replace(/^\/+|\/+$/g, "").toLowerCase();
-      if (path === "gizlilikpolitikasi") this.setState({ lang: "tr" });
-      else if (path === "privacypolicy") this.setState({ lang: "en" });
+      if (path === "gizlilikpolitikasi" || path === "kvkk") this.setState({ lang: "tr" });
+      else if (path === "privacypolicy" || path === "kvkkdisclosure") this.setState({ lang: "en" });
     } catch (e) {}
     try {
       const res = await fetch("/api/content");
@@ -166,13 +170,20 @@ class Component extends DCLogic {
       { name: "Picolori", domain: "picolori.oguzhangunay.com", privacy: "" }
     ];
     const projects = (cms.projects && cms.projects.length) ? cms.projects : defaults;
-    let want = "", doc = "";
+    let want = "", doc = "", host = "";
     try {
       const q = new URLSearchParams(window.location.search);
       want = q.get("app") || "";
       doc = q.get("doc") || "";
     } catch (e) {}
-    const isSite = want === "site";
+    try { host = (window.location.hostname || "").toLowerCase().replace(/^www\./, ""); } catch (e) {}
+    if (!doc) {
+      try {
+        const path = (window.location.pathname || "").replace(/^\/+|\/+$/g, "").toLowerCase();
+        if (path === "kvkk" || path === "kvkkdisclosure") doc = "kvkk";
+      } catch (e) {}
+    }
+    const isSite = want === "site" || (!want && (!host || host === "oguzhangunay.com"));
     let app;
     if (isSite) {
       app = { name: "oguzhangunay.com", domain: "oguzhangunay.com", privacy: "", kvkk: "" };
@@ -182,8 +193,6 @@ class Component extends DCLogic {
       // No ?app= param — likely reached via a project's own subdomain
       // (e.g. optiva.oguzhangunay.com/gizlilikpolitikasi). Resolve the
       // project from the hostname instead.
-      let host = "";
-      try { host = (window.location.hostname || "").toLowerCase().replace(/^www\./, ""); } catch (e) {}
       app = projects.find((p) => (p.domain || "").toLowerCase() === host) || projects[0];
     }
     const name = app.name || "Uygulama";

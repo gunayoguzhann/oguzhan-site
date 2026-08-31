@@ -1,11 +1,14 @@
 /admin   /Admin%20Paneli.dc   200
 /admin/  /Admin%20Paneli.dc   200
 
-# Clean privacy-policy paths on a project's subdomain (e.g.
-# optiva.oguzhangunay.com/gizlilikpolitikasi). The page itself resolves
-# which project from the hostname it's served on.
+# Clean privacy-policy / KVKK paths — work both on the main domain (the
+# site's own policy) and on a project's subdomain (that project's
+# policy). The page itself resolves which one from the hostname it's
+# served on, and which document from the path.
 /gizlilikpolitikasi   /Gizlilik%20Politikasi.dc   200
 /privacypolicy        /Gizlilik%20Politikasi.dc   200
+/kvkk                 /Gizlilik%20Politikasi.dc   200
+/kvkkdisclosure       /Gizlilik%20Politikasi.dc   200
 
 # SPA fallback for admin-editable page links (e.g. /anasayfa, /hakkinda,
 # /home, /about) — only applies when no real file matches the path, so
