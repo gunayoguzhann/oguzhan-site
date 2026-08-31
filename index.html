@@ -760,8 +760,10 @@ class Component extends DCLogic {
       nguAnimOpen: this.state.nguAnimOpen,
       triggerNguAnim: (e) => this.triggerNguAnim(e),
       closeNguAnim: () => this.closeNguAnim(),
-      goHome: () => this.go("home"), goAbout: () => this.go("about"),
-      goProjects: () => this.go("projects"), goContact: () => this.go("contact"),
+      goHome: (e) => { if (e && e.preventDefault) e.preventDefault(); this.go("home"); },
+      goAbout: (e) => { if (e && e.preventDefault) e.preventDefault(); this.go("about"); },
+      goProjects: (e) => { if (e && e.preventDefault) e.preventDefault(); this.go("projects"); },
+      goContact: (e) => { if (e && e.preventDefault) e.preventDefault(); this.go("contact"); },
       accounts: (cms.accounts && cms.accounts.length) ? cms.accounts.map((a) => ({
         label: a.label, href: a.href,
         handle: (a.href || "").replace(/^https?:\/\/(www\.)?/, "").replace(/^mailto:/, "")
