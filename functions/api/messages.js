@@ -2,7 +2,7 @@
 // GET/PUT require an authenticated admin session (the admin panel reads
 // and updates the inbox).
 import { requireAuth, json } from "../_lib/auth.js";
-import { sendEmail } from "../_lib/email.js";
+import { sendEmail, emailTemplate } from "../_lib/email.js";
 
 const MAX_MESSAGES = 500;
 
@@ -49,15 +49,27 @@ export async function onRequestPost({ request, env }) {
     if (accountRaw) {
       const account = JSON.parse(accountRaw);
       const safeEmail = /^\S+@\S+\.\S+$/.test(email) ? email : null;
+      const origin = new URL(request.url).origin;
+      const displayName = escapeHtml(name || "İsimsiz");
+      const bodyHtml =
+        `<p style="margin:0 0 16px"><strong>${displayName}</strong> iletişim formundan yeni bir mesaj gönderdi.</p>` +
+        `<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;margin:0 0 16px;border:1px solid #d7d3d3">` +
+        `<tr><td style="padding:10px 14px;border-bottom:1px solid #d7d3d3;width:80px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#7d7979">İsim</td><td style="padding:10px 14px;border-bottom:1px solid #d7d3d3;font-size:14px;color:#201e1d">${displayName}</td></tr>` +
+        `<tr><td style="padding:10px 14px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#7d7979">E-posta</td><td style="padding:10px 14px;font-size:14px;color:#201e1d">${escapeHtml(email || "—")}</td></tr>` +
+        `</table>` +
+        `<p style="margin:0 0 4px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#7d7979">Mesaj</p>` +
+        `<p style="margin:0;white-space:pre-wrap">${escapeHtml(text)}</p>`;
       await sendEmail(env, {
         to: account.email,
         replyTo: safeEmail || undefined,
         subject: "Yeni mesaj: " + (name || "İsimsiz"),
-        html:
-          `<p><strong>${escapeHtml(name || "İsimsiz")}</strong> iletişim formundan yeni bir mesaj gönderdi.</p>` +
-          `<p><strong>E-posta:</strong> ${escapeHtml(email || "—")}</p>` +
-          `<p><strong>Mesaj:</strong><br>${escapeHtml(text).replace(/\n/g, "<br>")}</p>` +
-          `<p style="color:#888;font-size:12px">Admin panelinden de görüntüleyebilirsin: /Admin Paneli.dc.html</p>`,
+        html: emailTemplate({
+          preheader: text.slice(0, 120),
+          title: "Yeni bir mesajın var",
+          bodyHtml,
+          ctaLabel: "Admin Panelini Aç",
+          ctaUrl: `${origin}/admin`,
+        }),
       });
     }
   } catch (e) {

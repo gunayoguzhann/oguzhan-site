@@ -1,5 +1,5 @@
 import { json, RESET_TTL_SECONDS } from "../../_lib/auth.js";
-import { sendEmail } from "../../_lib/email.js";
+import { sendEmail, emailTemplate } from "../../_lib/email.js";
 
 export async function onRequestPost({ request, env }) {
   let body;
@@ -31,11 +31,16 @@ export async function onRequestPost({ request, env }) {
   try {
     await sendEmail(env, {
       to: account.email,
-      subject: "Şifre sıfırlama - Admin Paneli",
-      html:
-        `<p>Admin panelin için bir şifre sıfırlama isteği aldık.</p>` +
-        `<p><a href="${resetUrl}">${resetUrl}</a></p>` +
-        `<p>Bu bağlantı 15 dakika geçerlidir. Bu isteği sen yapmadıysan bu e-postayı yok sayabilirsin.</p>`,
+      subject: "Şifre sıfırlama isteği",
+      html: emailTemplate({
+        preheader: "Admin panelin için bir şifre sıfırlama isteği aldık.",
+        title: "Şifre sıfırlama isteği",
+        bodyHtml:
+          `<p style="margin:0 0 12px">Admin panelin için bir şifre sıfırlama isteği aldık. Devam etmek için aşağıdaki butona tıkla.</p>` +
+          `<p style="margin:0;font-size:12px;color:#9a9696">Bu bağlantı 15 dakika geçerlidir. Bu isteği sen yapmadıysan bu e-postayı yok sayabilirsin, şifren değişmeyecektir.</p>`,
+        ctaLabel: "Şifreni Sıfırla",
+        ctaUrl: resetUrl,
+      }),
     });
   } catch (e) {
     console.error("forgot-password email failed", e);
