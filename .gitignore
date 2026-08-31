@@ -1,2 +1,5 @@
 .thumbnail
 github.md
+.wrangler/
+node_modules/
+.dev.vars

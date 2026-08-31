@@ -15,24 +15,48 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap">
 <style>
   html { scroll-behavior: smooth; }
-  body { margin:0; background:#f3f2f2; color:#201e1d; font-family:"Archivo",system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  body { margin:0; background:#f3f2f2; color:#201e1d; font-family:"Archivo",system-ui,sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
   a { color:#201e1d; text-decoration:none; }
   a:hover { color:#ec3013; }
   ::selection { background:#ffc4b8; }
   :focus-visible { outline:2px solid #ec3013; outline-offset:2px; }
   input, textarea, button { font-family:inherit; }
+  img { max-width:100%; }
+
+  .nav-toggle{display:none;border:2px solid #201e1d;background:transparent;width:44px;height:44px;align-items:center;justify-content:center;cursor:pointer;font-size:18px;flex:none;box-sizing:border-box;align-self:center}
+  @media (min-width:881px){ .mobile-menu-panel{ display:none !important; } }
+  @media (max-width:880px){
+    .nav-desktop{ display:none !important; }
+    .nav-toggle{ display:inline-flex !important; }
+    .g-outer{ grid-template-columns:1fr !important; gap:28px !important; }
+    .g-outer-label{ position:static !important; top:auto !important; margin-bottom:4px !important; }
+    .g-hero{ grid-template-columns:1fr !important; gap:32px !important; }
+    .g-split{ grid-template-columns:1fr !important; gap:32px !important; }
+  }
+  @media (max-width:640px){
+    .container{ padding-left:20px !important; padding-right:20px !important; }
+    .hero-top{ padding-top:48px !important; padding-bottom:24px !important; }
+    .quote-block{ padding-top:28px !important; padding-bottom:32px !important; }
+    .poster-block{ padding-top:44px !important; padding-bottom:52px !important; }
+    .idea-section{ padding-top:56px !important; padding-bottom:48px !important; }
+    .side-section{ padding-top:44px !important; }
+    .banner-block{ padding-top:44px !important; padding-bottom:44px !important; }
+  }
+  @media (max-width:400px){
+    .container{ padding-left:16px !important; padding-right:16px !important; }
+  }
 </style>
 </helmet>
 
 <div lang="{{ langAttr }}" style="min-height:100vh;background:#f3f2f2">
 
   <header style="position:sticky;top:0;z-index:20;background:#f3f2f2;border-bottom:2px solid #201e1d">
-    <div style="max-width:1320px;margin:0 auto;padding:0 32px;display:flex;align-items:stretch;justify-content:space-between;gap:32px;height:68px">
+    <div class="container" style="max-width:1320px;margin:0 auto;padding:0 32px;display:flex;align-items:stretch;justify-content:space-between;gap:32px;height:68px">
       <a href="#top" style="display:flex;align-items:center;gap:14px">
         <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#ec3013;color:#fff;font-weight:900;font-size:13px;letter-spacing:.04em">NGU</span>
         <span style="font-weight:700;font-size:15px;letter-spacing:-0.01em">Oğuzhan Günay</span>
       </a>
-      <nav style="display:flex;align-items:center;gap:0">
+      <nav class="nav-desktop" style="display:flex;align-items:center;gap:0">
         <button onClick="{{ goHome }}" style="{{ navHome }}" style-hover="background:#ffe0d9;color:#ae1800"><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Anasayfa</sc-if><sc-if value="{{ en }}">Home</sc-if></button>
         <button onClick="{{ goAbout }}" style="{{ navAbout }}" style-hover="background:#ffe0d9;color:#ae1800"><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Hakkında</sc-if><sc-if value="{{ en }}">About</sc-if></button>
         <button onClick="{{ goProjects }}" style="{{ navProjects }}" style-hover="background:#ffe0d9;color:#ae1800"><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Projeler</sc-if><sc-if value="{{ en }}">Projects</sc-if></button>
@@ -42,12 +66,28 @@
           <button onClick="{{ setEn }}" style="{{ enBtn }}">EN</button>
         </div>
       </nav>
+      <button onClick="{{ toggleMenu }}" class="nav-toggle" aria-label="{{ menuAriaLabel }}" aria-expanded="{{ menuOpenAttr }}" style="{{ toggleBtnStyle }}">{{ menuIcon }}</button>
     </div>
   </header>
 
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+  <div class="mobile-menu-panel" style="position:fixed;top:68px;left:0;right:0;bottom:0;z-index:19;background:#f3f2f2;overflow-y:auto;border-top:2px solid #201e1d">
+    <nav style="display:flex;flex-direction:column">
+      <button onClick="{{ goHome }}" style="{{ mNavHome }}"><span><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Anasayfa</sc-if><sc-if value="{{ en }}">Home</sc-if></span><span style="color:#ec3013">→</span></button>
+      <button onClick="{{ goAbout }}" style="{{ mNavAbout }}"><span><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Hakkında</sc-if><sc-if value="{{ en }}">About</sc-if></span><span style="color:#ec3013">→</span></button>
+      <button onClick="{{ goProjects }}" style="{{ mNavProjects }}"><span><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Projeler</sc-if><sc-if value="{{ en }}">Projects</sc-if></span><span style="color:#ec3013">→</span></button>
+      <button onClick="{{ goContact }}" style="{{ mNavContact }}"><span><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">İletişim</sc-if><sc-if value="{{ en }}">Contact</sc-if></span><span style="color:#ec3013">→</span></button>
+    </nav>
+    <div style="display:flex;align-items:center;gap:0;margin:24px;border:2px solid #201e1d;height:44px;width:fit-content">
+      <button onClick="{{ setTr }}" style="{{ trBtn }}">TR</button>
+      <button onClick="{{ setEn }}" style="{{ enBtn }}">EN</button>
+    </div>
+  </div>
+  </sc-if>
+
   <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
-  <section id="top" style="max-width:1320px;margin:0 auto;padding:0 32px">
-    <div style="padding:80px 0 40px">
+  <section id="top" class="container" style="max-width:1320px;margin:0 auto;padding:0 32px">
+    <div class="hero-top" style="padding:80px 0 40px">
       <div style="font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#ec3013;margin-bottom:32px">
 {{ kicker }}
       </div>
@@ -56,22 +96,21 @@
 
     <div style="height:2px;background:#201e1d"></div>
 
-    <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:64px;padding:36px 0 72px;align-items:start">
-      <p style="margin:0;font-size:clamp(18px,2vw,26px);line-height:1.35;max-width:34ch;text-wrap:pretty">
-{{ heroIntro }}
+    <div class="g-hero" style="display:grid;grid-template-columns:1.6fr 1fr;gap:64px;padding:36px 0 72px;align-items:start">
+      <p style="margin:0;font-weight:800;font-size:clamp(18px,2vw,26px);line-height:1.3;letter-spacing:-0.01em;max-width:34ch;text-wrap:pretty">
+{{ heroIntro1 }} <span style="color:#ec3013">{{ heroIntro2 }}</span>
       </p>
       <div style="display:flex;flex-direction:column;gap:14px;align-items:flex-start">
-        <span style="font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#7d7979">Motto</span>
         <span style="font-size:15px;letter-spacing:.06em;color:#605d5d">never give up<span style="color:#ec3013"> · NGU</span></span>
-        <button onClick="{{ goProjects }}" style="margin-top:10px;display:inline-flex;align-items:center;gap:12px;background:#ec3013;color:#fff;border:0;padding:14px 22px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;text-align:left" style-hover="background:#dd2b0f;color:#fff">
+        <button onClick="{{ goProjects }}" style="display:inline-flex;align-items:center;gap:12px;background:#ec3013;color:#fff;border:0;padding:14px 22px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;text-align:left" style-hover="background:#dd2b0f;color:#fff">
           <sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Projelere bak</sc-if><sc-if value="{{ en }}">See projects</sc-if>
         </button>
       </div>
     </div>
   </section>
 
-  <div style="background:#f0bf00;color:#201e1d;border-top:2px solid #201e1d;padding:44px 0 52px">
-    <div style="max-width:1320px;margin:0 auto;padding:0 32px">
+  <div class="quote-block" style="background:#f0bf00;color:#201e1d;border-top:2px solid #201e1d;padding:44px 0 52px">
+    <div class="container" style="max-width:1320px;margin:0 auto;padding:0 32px">
       <div style="font-weight:900;font-size:clamp(44px,5.5vw,84px);line-height:0.5;color:#ec3013;margin-bottom:26px">&ldquo;&thinsp;&rdquo;</div>
       <blockquote style="margin:0;font-weight:900;font-size:clamp(22px,3.6vw,52px);line-height:1.08;letter-spacing:-0.02em;text-transform:uppercase;max-width:26ch">
         <sc-if value="{{ useDefQuote }}" hint-placeholder-val="{{ true }}"><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}"><span lang="tr">Ürününün <span style="color:#ec3013">ilk versiyonu</span> seni utandırmıyorsa, çok geç kalmışsındır.</span></sc-if><sc-if value="{{ en }}">If you're not <span style="color:#ec3013">embarrassed</span> by the first version of your product, you've launched too late.</sc-if></sc-if><sc-if value="{{ useCmsQuote }}" hint-placeholder-val="{{ false }}"><span lang="tr">{{ quoteText }}</span></sc-if>
@@ -85,7 +124,7 @@
 
   <div style="height:2px;background:#201e1d"></div>
 
-  <section style="max-width:1320px;margin:0 auto;padding:64px 32px 72px">
+  <section class="container" style="max-width:1320px;margin:0 auto;padding:64px 32px 72px">
     <div style="display:flex;flex-direction:column;align-items:flex-start;width:fit-content;max-width:100%;margin:0 auto">
       <span style="font-weight:900;font-size:clamp(22px,3.6vw,52px);line-height:0.98;letter-spacing:-0.035em;color:#201e1d">
 {{ stairL1 }}
@@ -96,11 +135,12 @@
       <span style="font-weight:900;font-size:clamp(22px,3.6vw,52px);line-height:0.98;letter-spacing:-0.035em;color:#201e1d;margin-left:5em;margin-top:0.2em">
 {{ stairL3 }}
       </span>
+      <span style="font-size:14px;font-weight:700;color:#605d5d;margin-left:5em;margin-top:18px">— Barış Özistek</span>
     </div>
   </section>
 
-  <div style="background:#f0bf00;color:#201e1d;padding:76px 0 88px;border-top:2px solid #201e1d;border-bottom:2px solid #201e1d">
-    <div style="max-width:1320px;margin:0 auto;padding:0 32px">
+  <div class="poster-block" style="background:#f0bf00;color:#201e1d;padding:76px 0 88px;border-top:2px solid #201e1d;border-bottom:2px solid #201e1d">
+    <div class="container" style="max-width:1320px;margin:0 auto;padding:0 32px">
       <div style="font-size:12px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;margin-bottom:28px">Never give up</div>
       <div style="display:flex;flex-direction:column">
         <span style="font-weight:900;font-size:clamp(38px,7.2vw,112px);line-height:0.92;letter-spacing:-0.035em">
@@ -113,7 +153,7 @@
     </div>
   </div>
 
-  <section style="max-width:1320px;margin:0 auto;padding:88px 32px 80px">
+  <section class="container idea-section" style="max-width:1320px;margin:0 auto;padding:88px 32px 80px">
     <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:40px">
       <h2 style="margin:0;font-weight:900;font-size:clamp(38px,6.4vw,96px);line-height:0.94;letter-spacing:-0.035em;min-width:0">
         <sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Bir fikrin<br>mi var?</sc-if><sc-if value="{{ en }}">Got an<br>idea?</sc-if>
@@ -125,17 +165,17 @@
     </div>
   </section>
 
-  <section style="max-width:1320px;margin:0 auto;padding:0 32px 88px">
+  <section class="container" style="max-width:1320px;margin:0 auto;padding:0 32px 88px">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2px;background:#201e1d;border:2px solid #201e1d">
-      <button onClick="{{ goAbout }}" style="background:#ec3013;color:#fff;border:0;cursor:pointer;font-family:inherit;text-align:left;padding:28px;display:flex;flex-direction:column;gap:56px;min-width:0" style-hover="background:#dd2b0f">
+      <button onClick="{{ goAbout }}" style="background:#ec3013;color:#fff;border:0;cursor:pointer;font-family:inherit;text-align:left;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0" style-hover="background:#dd2b0f">
         <span style="font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#ffe0d9">01</span>
         <span style="font-size:26px;font-weight:900;letter-spacing:-0.02em"><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Hakkında →</sc-if><sc-if value="{{ en }}">About →</sc-if></span>
       </button>
-      <button onClick="{{ goProjects }}" style="background:#ec3013;color:#fff;border:0;cursor:pointer;font-family:inherit;text-align:left;padding:28px;display:flex;flex-direction:column;gap:56px;min-width:0" style-hover="background:#dd2b0f">
+      <button onClick="{{ goProjects }}" style="background:#ec3013;color:#fff;border:0;cursor:pointer;font-family:inherit;text-align:left;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0" style-hover="background:#dd2b0f">
         <span style="font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#ffe0d9">02</span>
         <span style="font-size:26px;font-weight:900;letter-spacing:-0.02em"><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Projeler →</sc-if><sc-if value="{{ en }}">Projects →</sc-if></span>
       </button>
-      <button onClick="{{ goContact }}" style="background:#ec3013;color:#fff;border:0;cursor:pointer;font-family:inherit;text-align:left;padding:28px;display:flex;flex-direction:column;gap:56px;min-width:0" style-hover="background:#dd2b0f">
+      <button onClick="{{ goContact }}" style="background:#ec3013;color:#fff;border:0;cursor:pointer;font-family:inherit;text-align:left;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0" style-hover="background:#dd2b0f">
         <span style="font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#ffe0d9">03</span>
         <span style="font-size:26px;font-weight:900;letter-spacing:-0.02em"><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">İletişim →</sc-if><sc-if value="{{ en }}">Contact →</sc-if></span>
       </button>
@@ -144,12 +184,12 @@
   </sc-if>
 
   <sc-if value="{{ isAbout }}">
-  <section id="hakkinda" style="max-width:1320px;margin:0 auto;padding:72px 32px 0">
-    <div style="display:grid;grid-template-columns:220px 1fr;gap:64px;align-items:start">
-      <div style="font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#ec3013;position:sticky;top:100px">
+  <section id="hakkinda" class="container side-section" style="max-width:1320px;margin:0 auto;padding:72px 32px 0">
+    <div class="g-outer" style="display:grid;grid-template-columns:220px 1fr;gap:64px;align-items:start">
+      <div class="g-outer-label" style="font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#ec3013;position:sticky;top:100px">
         <sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">01 — Hakkında</sc-if><sc-if value="{{ en }}">01 — About</sc-if>
       </div>
-      <div style="display:grid;grid-template-columns:1.35fr 1fr;gap:56px;align-items:start">
+      <div class="g-split" style="display:grid;grid-template-columns:1.35fr 1fr;gap:56px;align-items:start">
         <div>
           <sc-for list="{{ aboutTopParas }}" as="tp" hint-placeholder-count="2">
             <p style="margin:0 0 22px;font-size:19px;line-height:1.6;text-wrap:pretty">{{ tp.text }}</p>
@@ -172,8 +212,9 @@
         </div>
 
         <div>
-          <div style="aspect-ratio:3/4;border:2px solid #201e1d;background:repeating-linear-gradient(135deg,#eae9e9 0 10px,#f3f2f2 10px 20px);display:flex;align-items:flex-end;padding:16px;filter:grayscale(1)">
-            <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:.06em;color:#605d5d">portre fotoğrafı / portrait</span>
+          <div style="position:relative;aspect-ratio:3/4;border:2px solid #201e1d;background:repeating-linear-gradient(135deg,#eae9e9 0 10px,#f3f2f2 10px 20px);display:flex;align-items:flex-end;padding:16px;overflow:hidden">
+            <sc-if value="{{ hasPhoto }}" hint-placeholder-val="{{ false }}"><div style="{{ photoCss }}"></div></sc-if>
+            <sc-if value="{{ noPhoto }}" hint-placeholder-val="{{ true }}"><span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:.06em;color:#605d5d">portre fotoğrafı / portrait</span></sc-if>
           </div>
           <div style="margin-top:24px;font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#ec3013;margin-bottom:8px">
             <sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Hesaplar</sc-if><sc-if value="{{ en }}">Accounts</sc-if>
@@ -191,7 +232,7 @@
     </div>
     <div style="border-top:2px solid #201e1d;margin-top:64px;padding-top:32px;display:flex;flex-direction:column;gap:20px">
       <p style="margin:0;font-size:clamp(18px,2.2vw,26px);font-weight:700;line-height:1.4;letter-spacing:-0.01em;max-width:40ch;text-wrap:pretty">{{ aboutClosing }}</p>
-      <span style="align-self:flex-end;font-style:italic;font-weight:800;font-size:22px;letter-spacing:.01em;border-bottom:3px solid #ec3013;padding-bottom:4px">Oğuzhan Günay</span>
+      <span style="align-self:flex-end;font-style:italic;font-weight:800;font-size:22px;letter-spacing:.01em;border-bottom:3px solid #ec3013;padding-bottom:4px">{{ aboutSignature }}</span>
     </div>
     <div style="height:72px"></div>
   </section>
@@ -199,9 +240,9 @@
   </sc-if>
 
   <sc-if value="{{ isProjects }}">
-  <section id="projeler" style="max-width:1320px;margin:0 auto;padding:72px 32px 0">
-    <div style="display:grid;grid-template-columns:220px 1fr;gap:64px;align-items:start">
-      <div style="font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#ec3013;position:sticky;top:100px">
+  <section id="projeler" class="container side-section" style="max-width:1320px;margin:0 auto;padding:72px 32px 0">
+    <div class="g-outer" style="display:grid;grid-template-columns:220px 1fr;gap:64px;align-items:start">
+      <div class="g-outer-label" style="font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#ec3013;position:sticky;top:100px">
         <sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">02 — Projeler</sc-if><sc-if value="{{ en }}">02 — Projects</sc-if>
       </div>
       <div style="min-width:0">
@@ -239,7 +280,7 @@
   </sc-if>
 
   <sc-if value="{{ isProject }}">
-  <section style="max-width:1320px;margin:0 auto;padding:40px 32px 0">
+  <section class="container" style="max-width:1320px;margin:0 auto;padding:40px 32px 0">
     <button onClick="{{ goProjects }}" style="display:inline-flex;align-items:center;gap:10px;padding:10px 0;border:0;background:transparent;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#605d5d" style-hover="color:#ec3013">
       <span style="color:#ec3013">←</span><span><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Tüm projeler</sc-if><sc-if value="{{ en }}">All projects</sc-if></span>
     </button>
@@ -251,7 +292,7 @@
 
     <div style="height:2px;background:#201e1d"></div>
 
-    <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:56px;padding:36px 0 64px;align-items:start">
+    <div class="g-split" style="display:grid;grid-template-columns:1.4fr 1fr;gap:56px;padding:36px 0 64px;align-items:start">
       <div style="min-width:0">
         <p style="margin:0 0 28px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.7;color:#605d5d;max-width:56ch">{{ current.detail }}</p>
         <div style="font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#ec3013;margin-bottom:4px">
@@ -309,12 +350,12 @@
   </sc-if>
 
   <sc-if value="{{ isContact }}">
-  <section id="iletisim" style="max-width:1320px;margin:0 auto;padding:72px 32px 0">
-    <div style="display:grid;grid-template-columns:220px 1fr;gap:64px;align-items:start">
-      <div style="font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#ec3013;position:sticky;top:100px">
+  <section id="iletisim" class="container side-section" style="max-width:1320px;margin:0 auto;padding:72px 32px 0">
+    <div class="g-outer" style="display:grid;grid-template-columns:220px 1fr;gap:64px;align-items:start">
+      <div class="g-outer-label" style="font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#ec3013;position:sticky;top:100px">
         <sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">03 — İletişim</sc-if><sc-if value="{{ en }}">03 — Contact</sc-if>
       </div>
-      <div style="display:grid;grid-template-columns:1.35fr 1fr;gap:56px;align-items:start">
+      <div class="g-split" style="display:grid;grid-template-columns:1.35fr 1fr;gap:56px;align-items:start">
         <div>
           <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
             <div style="display:flex;flex-direction:column;gap:22px">
@@ -330,6 +371,9 @@
                 <span style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#605d5d"><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Mesaj</sc-if><sc-if value="{{ en }}">Message</sc-if></span>
                 <textarea rows="6" value="{{ fMsg }}" onChange="{{ onMsg }}" style="border:2px solid #201e1d;background:#f3f2f2;padding:13px 14px;font-size:16px;color:#201e1d;resize:vertical"></textarea>
               </label>
+              <sc-if value="{{ sendError }}" hint-placeholder-val="{{ false }}">
+                <p style="margin:0;font-size:13px;font-weight:600;color:#ae1800"><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Mesaj gönderilemedi, lütfen tekrar dene.</sc-if><sc-if value="{{ en }}">Couldn't send the message, please try again.</sc-if></p>
+              </sc-if>
               <button onClick="{{ send }}" style="align-self:flex-start;background:#ec3013;color:#fff;border:2px solid #ec3013;padding:15px 26px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;text-align:left" style-hover="background:#dd2b0f;border-color:#dd2b0f">
                 <sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Mesajı gönder</sc-if><sc-if value="{{ en }}">Send message</sc-if>
               </button>
@@ -370,15 +414,15 @@
   </sc-if>
 
   <sc-if value="{{ showBanner }}" hint-placeholder-val="{{ true }}">
-    <div style="background:#ec3013;color:#fff;padding:72px 0">
-      <div style="max-width:1320px;margin:0 auto;padding:0 32px">
+    <div class="banner-block" style="background:#ec3013;color:#fff;padding:72px 0">
+      <div class="container" style="max-width:1320px;margin:0 auto;padding:0 32px">
         <p style="margin:0;font-size:clamp(44px,9vw,150px);font-weight:900;line-height:0.88;letter-spacing:-0.035em;text-transform:uppercase">Never<br>give up</p>
       </div>
     </div>
   </sc-if>
 
   <footer style="border-top:2px solid #201e1d;background:#f3f2f2">
-    <div style="max-width:1320px;margin:0 auto;padding:28px 32px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between">
+    <div class="container" style="max-width:1320px;margin:0 auto;padding:28px 32px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between">
       <span style="font-size:13px;color:#605d5d">© 2026 Oğuzhan Günay — oguzhangunay.com</span>
       <div style="display:flex;align-items:center;gap:24px">
         <a href="Gizlilik Politikasi.dc.html?app=site" style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#605d5d" style-hover="color:#ae1800"><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Gizlilik Politikası</sc-if><sc-if value="{{ en }}">Privacy Policy</sc-if></a>
@@ -391,33 +435,24 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;defaultLang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;tr&quot;,&quot;en&quot;],&quot;default&quot;:&quot;tr&quot;,&quot;tsType&quot;:&quot;'tr' | 'en'&quot;},&quot;showClosingBanner&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
 class Component extends DCLogic {
-  state = { lang: null, page: "home", proj: 0, sent: false, name: "", mail: "", msg: "", cms: null };
+  state = { lang: null, page: "home", proj: 0, sent: false, sendError: false, name: "", mail: "", msg: "", cms: null, menuOpen: false };
 
-  componentDidMount() {
-    this._loadCms = () => {
-      try {
-        const c = localStorage.getItem("ngu-site-content");
-        this.setState({ cms: c ? JSON.parse(c) : null });
-      } catch (e) {}
-    };
-    this._loadCms();
-    window.addEventListener("storage", this._loadCms);
-    window.addEventListener("focus", this._loadCms);
+  async componentDidMount() {
+    let c = null;
+    try {
+      const res = await fetch("/api/content");
+      c = res.ok ? await res.json() : null;
+      this.setState({ cms: c && Object.keys(c).length ? c : null });
+    } catch (e) {}
     try {
       const q = new URLSearchParams(window.location.search).get("app");
       if (q) {
         const slug = (t) => (t || "").toLowerCase().replace(/ç/g, "c").replace(/ğ/g, "g").replace(/ı/g, "i").replace(/ö/g, "o").replace(/ş/g, "s").replace(/ü/g, "u").replace(/[^a-z0-9]/g, "");
-        const c = JSON.parse(localStorage.getItem("ngu-site-content") || "null") || {};
-        const list = (c.projects && c.projects.length) ? c.projects : [{ name: "Optiva" }, { name: "Picolori" }];
+        const list = (c && c.projects && c.projects.length) ? c.projects : [{ name: "Optiva" }, { name: "Picolori" }];
         const i = list.findIndex((p) => slug(p.name) === q);
         this.setState(i >= 0 ? { page: "project", proj: i } : { page: "projects" });
       }
     } catch (e) {}
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("storage", this._loadCms);
-    window.removeEventListener("focus", this._loadCms);
   }
 
   openProject(i) {
@@ -426,8 +461,12 @@ class Component extends DCLogic {
   }
 
   go(page) {
-    this.setState({ page });
+    this.setState({ page, menuOpen: false });
     if (typeof window !== "undefined") window.scrollTo(0, 0);
+  }
+
+  toggleMenu() {
+    this.setState((s) => ({ menuOpen: !s.menuOpen }));
   }
 
   renderVals() {
@@ -444,9 +483,20 @@ class Component extends DCLogic {
       "background:" + (on ? "#201e1d" : "transparent") +
       ";color:" + (on ? "#f3f2f2" : "#201e1d") +
       ";border:0;padding:0 12px;height:100%;font-size:12px;font-weight:700;letter-spacing:.08em;cursor:pointer";
+    const mNavBtn = (on) =>
+      "display:flex;align-items:center;justify-content:space-between;width:100%;padding:20px 24px;border:0;border-bottom:1px solid #d7d3d3;background:" +
+      (on ? "#ffe0d9" : "transparent") +
+      ";color:" + (on ? "#ae1800" : "#201e1d") +
+      ";font-family:inherit;font-size:17px;font-weight:800;letter-spacing:-0.01em;cursor:pointer;text-align:left";
 
     const cms = this.state.cms || {};
     const ch = cms.home || {}, ca = cms.about || {};
+    const introFull = tr
+      ? (ch.intro || "İyi dijital ürün; doğru soru, karmaşığı sadeleştirmek ve özen göstermekle başlar. Ben fikirleri, insanların gerçekten kullanmak isteyeceği deneyimlere dönüştürüyorum.")
+      : "A good digital product starts with asking the right question, simplifying the complex and caring about the details. I turn ideas into experiences people genuinely want to use.";
+    const introSplit = introFull.indexOf(". ");
+    const heroIntro1 = introSplit >= 0 ? introFull.slice(0, introSplit + 1) : introFull;
+    const heroIntro2 = introSplit >= 0 ? introFull.slice(introSplit + 2) : "";
     const projSrc = (cms.projects && cms.projects.length) ? cms.projects : [
       { name: "Optiva", desc: "", domain: "optiva.oguzhangunay.com", appstore: "", play: "" },
       { name: "Picolori", desc: "", domain: "picolori.oguzhangunay.com", appstore: "", play: "" }
@@ -508,7 +558,7 @@ class Component extends DCLogic {
       tr, en: !tr, langAttr: tr ? "tr" : "en",
       isProject: page === "project",
       kicker: tr ? (ch.kicker || "Makine mühendisi · Optisyen · Uygulama geliştirici") : "Mechanical engineer · Optician · App developer",
-      heroIntro: tr ? (ch.intro || "İyi bir dijital ürün; doğru soruyu sormak, karmaşığı sadeleştirmek ve detaylara özen göstermekle başlar. Ben de fikirleri, insanların gerçekten kullanmak isteyeceği deneyimlere dönüştürüyorum.") : "A good digital product starts with asking the right question, simplifying the complex and caring about the details. I turn ideas into experiences people genuinely want to use.",
+      heroIntro1, heroIntro2,
       stairL1: tr ? (ch.l1 || "Pazar günü Netflix") : "Sunday Netflix",
       stairL2: tr ? (ch.l2 || "izleyenden") : "binge-watchers",
       stairL3: tr ? (ch.l3 || "girişimci olmaz.") : "don't build companies.",
@@ -518,12 +568,15 @@ class Component extends DCLogic {
       quoteBy: ch.quoteBy || "Reid Hoffman",
       quoteRole: (tr && ch.quoteRole) ? ch.quoteRole : (tr ? "LinkedIn'in Kurucusu" : "Founder of LinkedIn"),
       aboutTopParas: (tr
-        ? (ca.p0 || "Oğuzhan Günay 1999 yılında İstanbul'da doğmuştur ve 2023 yılında eğitim hayatını tamamlayıp iş hayatına atılmıştır. Optik sektöründe ustalarından ve aldığı eğitimlerde teorik kaynaklardan edindiği bilgiyle kendini sürekli geliştirmiştir.\n\nOğuzhan Günay, emeğe saygı, %100 müşteri memnuniyeti ve \u201cönce sağlık\u201d ilkelerini temel prensip haline getirmiştir.")
+        ? (ca.p0 || "Oğuzhan Günay, 1999 yılında İstanbul'da doğdu. Eğitim hayatını 2023 yılında tamamlayarak profesyonel iş hayatına adım attı. Aile mesleği olan optik sektöründe, mesleğin ustalarından edindiği deneyimi akademik ve teorik eğitimleriyle birleştirerek kendini geliştirmeye devam etmektedir.\n\nMakine mühendisliği eğitimine Yeditepe Üniversitesi'nde başlayan Oğuzhan Günay, eğitimini Nişantaşı Üniversitesi'nde tamamladı. Üniversite yıllarında teorik eğitiminin yanı sıra okul bünyesinde uygulamalı çalışmalar gerçekleştirdi; Tuzla tersaneler bölgesi başta olmak üzere çeşitli işletmelerde yaptığı stajlarla saha deneyimi kazandı. Bu süreçte makine mühendisliğinin temel prensiplerini, teknik düşünme yaklaşımını ve problem çözme disiplinini hem teorik hem de pratik açıdan geliştirdi.\n\nMakine mühendisliği eğitiminin ardından Medipol Üniversitesi'nde optisyenlik eğitimi aldı. Böylece çocukluğundan itibaren içinde bulunduğu aile mesleğindeki tecrübesini akademik bilgiyle destekleyerek optik alanındaki mesleki birikimini güçlendirdi.")
         : "Oğuzhan Günay was born in Istanbul in 1999 and entered working life in 2023 after completing his education. In the optical trade he has continuously improved himself with knowledge gained from his masters and from theoretical sources during his training.\n\nHe has made respect for labour, 100% customer satisfaction and \u201chealth first\u201d his core principles."
       ).split(/\n\s*\n|\n/).filter(Boolean).map((t) => ({ text: t })),
       aboutClosing: ca.closing || "İşimiz memleketimiz, halkımız velinimetimizdir. Allah tüm müşterilerimizden razı olsun.",
-      aboutP1: tr ? (ca.p1 || "Oğuzhan Günay, makine mühendisliği eğitiminin temellerini Yeditepe Üniversitesi'nde görmüş olup sonrasında Nişantaşı Üniversitesi'nden mezun olmuştur. Daha sonrasında Medipol Üniversitesi'nde optisyenlik eğitimi almıştır.") : "Oğuzhan Günay began his mechanical engineering studies at Yeditepe University and graduated from Nişantaşı University. He then studied optometry at Medipol University.",
-      aboutP2: tr ? (ca.p2 || "Şu anda aile mesleği olan gözlükçülük/optisyenlik yapmaktadır. Aynı zamanda kişisel gelişim ve girişimcilikle ilgili olup uygulama geliştirmektedir.") : "He currently works as an optician in the family business. Alongside that he is interested in personal development and entrepreneurship, and builds mobile applications.",
+      aboutSignature: ca.signature || "Çetin Günay",
+      hasPhoto: !!cms.photo, noPhoto: !cms.photo,
+      photoCss: "position:absolute;inset:0;width:100%;height:100%;background:url(" + cms.photo + ") center/cover;filter:grayscale(1)",
+      aboutP1: tr ? (ca.p1 || "Bugün aktif olarak aile şirketi Çetin Optik bünyesinde çalışmalarını sürdürmekte; edindiği bilgi birikimi ve deneyimi optik sektörüne aktarmaya devam etmektedir. Mesleki yaklaşımında emeğe saygı, %100 müşteri memnuniyeti ve \u201cönce sağlık\u201d ilkelerini temel prensipleri olarak benimsemektedir.") : "Oğuzhan Günay began his mechanical engineering studies at Yeditepe University and graduated from Nişantaşı University. He then studied optometry at Medipol University.",
+      aboutP2: tr ? (ca.p2 || "Optik alanındaki çalışmalarının yanında kişisel gelişim, girişimcilik ve teknolojiyle de yakından ilgilenmektedir. Fikirlerini dijital ürünlere dönüştürerek mobil uygulamalar geliştirmekte; farklı disiplinlerde edindiği bilgi ve deneyimleri teknoloji ve girişimcilikle bir araya getirmeye devam etmektedir.") : "He currently works as an optician in the family business. Alongside that he is interested in personal development and entrepreneurship, and builds mobile applications.",
       eduRows: (() => {
         const anyDate = eduSrc.some((r) => r.date);
         return eduSrc.map((r, i) => ({
@@ -543,6 +596,13 @@ class Component extends DCLogic {
       isProjects: page === "projects", isContact: page === "contact",
       navHome: navBtn(page === "home"), navAbout: navBtn(page === "about"),
       navProjects: navBtn(page === "projects" || page === "project"), navContact: navBtn(page === "contact"),
+      mNavHome: mNavBtn(page === "home"), mNavAbout: mNavBtn(page === "about"),
+      mNavProjects: mNavBtn(page === "projects" || page === "project"), mNavContact: mNavBtn(page === "contact"),
+      menuOpen: this.state.menuOpen, menuOpenAttr: this.state.menuOpen ? "true" : "false",
+      menuIcon: this.state.menuOpen ? "✕" : "☰",
+      menuAriaLabel: tr ? (this.state.menuOpen ? "Menüyü kapat" : "Menüyü aç") : (this.state.menuOpen ? "Close menu" : "Open menu"),
+      toggleBtnStyle: "background:" + (this.state.menuOpen ? "#201e1d" : "transparent") + ";color:" + (this.state.menuOpen ? "#f3f2f2" : "#201e1d"),
+      toggleMenu: () => this.toggleMenu(),
       goHome: () => this.go("home"), goAbout: () => this.go("about"),
       goProjects: () => this.go("projects"), goContact: () => this.go("contact"),
       accounts: (cms.accounts && cms.accounts.length) ? cms.accounts.map((a) => ({
@@ -579,24 +639,26 @@ class Component extends DCLogic {
       onName: (e) => this.setState({ name: e.target.value }),
       onMail: (e) => this.setState({ mail: e.target.value }),
       onMsg: (e) => this.setState({ msg: e.target.value }),
+      sendError: this.state.sendError,
       send: () => {
-        try {
-          const key = "ngu-messages";
-          const list = JSON.parse(localStorage.getItem(key) || "[]");
-          const mo = ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara"];
-          const d = new Date();
-          list.unshift({
-            name: this.state.name || (tr ? "İsimsiz" : "Anonymous"),
-            email: this.state.mail || "—",
-            body: this.state.msg || "",
-            date: d.getDate() + " " + mo[d.getMonth()],
-            read: false, open: false
-          });
-          localStorage.setItem(key, JSON.stringify(list));
-        } catch (e) {}
-        this.setState({ sent: true });
+        const name = this.state.name || (tr ? "İsimsiz" : "Anonymous");
+        const email = this.state.mail || "—";
+        const body = this.state.msg || "";
+        (async () => {
+          try {
+            const res = await fetch("/api/messages", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ name, email, body })
+            });
+            if (!res.ok) throw new Error();
+            this.setState({ sent: true, sendError: false });
+          } catch (e) {
+            this.setState({ sendError: true });
+          }
+        })();
       },
-      reset: () => this.setState({ sent: false, name: "", mail: "", msg: "" })
+      reset: () => this.setState({ sent: false, sendError: false, name: "", mail: "", msg: "" })
     };
   }
 }

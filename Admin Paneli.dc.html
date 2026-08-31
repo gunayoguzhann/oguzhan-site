@@ -25,14 +25,112 @@
 
 <div lang="tr" style="display:grid;grid-template-columns:250px 1fr;min-height:100vh;background:#f3f2f2">
 
+  <sc-if value="{{ isChecking }}" hint-placeholder-val="{{ false }}">
+    <div style="grid-column:1/-1;min-height:100vh;display:flex;align-items:center;justify-content:center">
+      <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:#605d5d">yükleniyor…</span>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isSetup }}" hint-placeholder-val="{{ false }}">
+    <div style="grid-column:1/-1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px">
+      <div style="width:100%;max-width:420px;border:2px solid #201e1d;padding:32px;display:flex;flex-direction:column;gap:16px">
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#ec3013;color:#fff;font-weight:900;font-size:13px">NGU</span>
+        <div>
+          <h1 style="margin:0;font-size:20px;font-weight:900">İlk kurulum</h1>
+          <p style="margin:8px 0 0;font-size:13px;color:#605d5d;line-height:1.5">Admin hesabını oluştur. Cloudflare Pages ortam değişkenlerinde tanımladığın SETUP_TOKEN değerini gir.</p>
+        </div>
+        <sc-if value="{{ hasSetupError }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:13px;color:#ae1800;font-weight:600">{{ setupError }}</p></sc-if>
+        <form onSubmit="{{ onSetupSubmit }}" style="display:contents">
+          <label style="display:flex;flex-direction:column;gap:6px">
+            <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#605d5d">Kurulum anahtarı</span>
+            <input type="password" autocomplete="off" value="{{ setupTokenVal }}" onChange="{{ onSetupToken }}" style="border:2px solid #201e1d;background:#f3f2f2;padding:11px 12px;font-size:14px;color:#201e1d">
+          </label>
+          <label style="display:flex;flex-direction:column;gap:6px">
+            <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#605d5d">E-posta</span>
+            <input type="email" autocomplete="username" value="{{ setupEmailVal }}" onChange="{{ onSetupEmail }}" style="border:2px solid #201e1d;background:#f3f2f2;padding:11px 12px;font-size:14px;color:#201e1d">
+          </label>
+          <label style="display:flex;flex-direction:column;gap:6px">
+            <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#605d5d">Şifre <span style="color:#9b9797;text-transform:none;font-weight:500">(6 haneli)</span></span>
+            <input type="password" autocomplete="new-password" inputmode="numeric" pattern="[0-9]*" maxlength="6" value="{{ setupPassVal }}" onChange="{{ onSetupPass }}" style="border:2px solid #201e1d;background:#f3f2f2;padding:11px 12px;font-size:14px;color:#201e1d;letter-spacing:.3em">
+          </label>
+          <button type="submit" style="background:#ec3013;color:#fff;border:2px solid #ec3013;padding:13px 20px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;text-align:left" style-hover="background:#dd2b0f;border-color:#dd2b0f">{{ setupBtnLabel }}</button>
+        </form>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">
+    <div style="grid-column:1/-1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px">
+      <div style="width:100%;max-width:380px;border:2px solid #201e1d;padding:32px;display:flex;flex-direction:column;gap:16px">
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#ec3013;color:#fff;font-weight:900;font-size:13px">NGU</span>
+        <h1 style="margin:0;font-size:20px;font-weight:900">Admin girişi</h1>
+
+        <sc-if value="{{ isLoginMode }}" hint-placeholder-val="{{ true }}">
+          <sc-if value="{{ hasLoginError }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:13px;color:#ae1800;font-weight:600">{{ loginError }}</p></sc-if>
+          <form onSubmit="{{ onLoginSubmit }}" style="display:contents">
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#605d5d">E-posta</span>
+              <input type="email" autocomplete="username" value="{{ loginEmailVal }}" onChange="{{ onLoginEmail }}" style="border:2px solid #201e1d;background:#f3f2f2;padding:11px 12px;font-size:14px;color:#201e1d">
+            </label>
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#605d5d">Şifre</span>
+              <input type="password" autocomplete="current-password" inputmode="numeric" pattern="[0-9]*" maxlength="6" value="{{ loginPassVal }}" onChange="{{ onLoginPass }}" style="border:2px solid #201e1d;background:#f3f2f2;padding:11px 12px;font-size:14px;color:#201e1d;letter-spacing:.3em">
+            </label>
+            <button type="submit" style="background:#ec3013;color:#fff;border:2px solid #ec3013;padding:13px 20px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;text-align:left" style-hover="background:#dd2b0f;border-color:#dd2b0f">{{ loginBtnLabel }}</button>
+          </form>
+          <button onClick="{{ toForgot }}" style="background:transparent;border:0;padding:0;font-size:12px;font-weight:600;color:#605d5d;cursor:pointer;text-align:left" style-hover="color:#ae1800">Şifremi unuttum</button>
+        </sc-if>
+
+        <sc-if value="{{ isForgotMode }}" hint-placeholder-val="{{ false }}">
+          <sc-if value="{{ forgotSent }}" hint-placeholder-val="{{ false }}">
+            <p style="margin:0;font-size:14px;line-height:1.6">Bu e-posta kayıtlıysa bir sıfırlama bağlantısı gönderildi. Gelen kutunu kontrol et.</p>
+            <button onClick="{{ toLogin }}" style="border:2px solid #201e1d;background:transparent;padding:11px 18px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;text-align:left" style-hover="background:#ffe0d9;color:#ae1800">Girişe dön</button>
+          </sc-if>
+          <sc-if value="{{ forgotNotSent }}" hint-placeholder-val="{{ true }}">
+            <sc-if value="{{ hasForgotError }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:13px;color:#ae1800;font-weight:600">{{ forgotError }}</p></sc-if>
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#605d5d">E-posta</span>
+              <input type="email" value="{{ forgotEmailVal }}" onChange="{{ onForgotEmail }}" style="border:2px solid #201e1d;background:#f3f2f2;padding:11px 12px;font-size:14px;color:#201e1d">
+            </label>
+            <button onClick="{{ doForgot }}" style="background:#ec3013;color:#fff;border:2px solid #ec3013;padding:13px 20px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;text-align:left" style-hover="background:#dd2b0f;border-color:#dd2b0f">{{ forgotBtnLabel }}</button>
+            <button onClick="{{ toLogin }}" style="background:transparent;border:0;padding:0;font-size:12px;font-weight:600;color:#605d5d;cursor:pointer;text-align:left" style-hover="color:#ae1800">Girişe dön</button>
+          </sc-if>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isReset }}" hint-placeholder-val="{{ false }}">
+    <div style="grid-column:1/-1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px">
+      <div style="width:100%;max-width:380px;border:2px solid #201e1d;padding:32px;display:flex;flex-direction:column;gap:16px">
+        <h1 style="margin:0;font-size:20px;font-weight:900">Yeni şifre belirle</h1>
+        <sc-if value="{{ hasResetError }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:13px;color:#ae1800;font-weight:600">{{ resetError }}</p></sc-if>
+        <sc-if value="{{ resetDone }}" hint-placeholder-val="{{ false }}">
+          <p style="margin:0;font-size:14px">Şifren güncellendi.</p>
+          <button onClick="{{ gotoLoginFresh }}" style="border:2px solid #201e1d;background:transparent;padding:11px 18px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;text-align:left" style-hover="background:#ffe0d9;color:#ae1800">Girişe dön</button>
+        </sc-if>
+        <sc-if value="{{ resetNotDone }}" hint-placeholder-val="{{ true }}">
+          <form onSubmit="{{ onResetSubmit }}" style="display:contents">
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#605d5d">Yeni şifre <span style="color:#9b9797;text-transform:none;font-weight:500">(6 haneli)</span></span>
+              <input type="password" autocomplete="new-password" inputmode="numeric" pattern="[0-9]*" maxlength="6" value="{{ resetPassVal }}" onChange="{{ onResetPass }}" style="border:2px solid #201e1d;background:#f3f2f2;padding:11px 12px;font-size:14px;color:#201e1d;letter-spacing:.3em">
+            </label>
+            <button type="submit" style="background:#ec3013;color:#fff;border:2px solid #ec3013;padding:13px 20px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;text-align:left" style-hover="background:#dd2b0f;border-color:#dd2b0f">{{ resetBtnLabel }}</button>
+          </form>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isReady }}" hint-placeholder-val="{{ false }}">
   <aside style="border-right:2px solid #201e1d;display:flex;flex-direction:column;position:sticky;top:0;height:100vh">
-    <div style="display:flex;align-items:center;gap:12px;padding:20px;border-bottom:2px solid #201e1d">
+    <a href="index.html" style="display:flex;align-items:center;gap:12px;padding:20px;border-bottom:2px solid #201e1d">
       <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#ec3013;color:#fff;font-weight:900;font-size:13px">NGU</span>
       <div style="display:flex;flex-direction:column">
         <span style="font-weight:800;font-size:14px">Admin</span>
         <span style="font-size:11px;color:#7d7979">oguzhangunay.com</span>
       </div>
-    </div>
+    </a>
     <nav style="display:flex;flex-direction:column;padding:12px 0">
       <button onClick="{{ tabHomeGo }}" style="{{ tabHomeCss }}" style-hover="background:#ffe0d9;color:#ae1800">Anasayfa</button>
       <button onClick="{{ tabAboutGo }}" style="{{ tabAboutCss }}" style-hover="background:#ffe0d9;color:#ae1800">Hakkında</button>
@@ -44,9 +142,15 @@
         <sc-if value="{{ hasUnread }}" hint-placeholder-val="{{ true }}"><span style="background:#ec3013;color:#fff;font-size:11px;font-weight:800;padding:2px 7px;margin-left:auto">{{ unreadCount }}</span></sc-if>
       </button>
     </nav>
-    <a href="index.html" style="margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-top:2px solid #201e1d;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase" style-hover="background:#ffe0d9;color:#ae1800">
-      <span>Siteyi görüntüle</span><span style="color:#ec3013">↗</span>
-    </a>
+    <div style="margin-top:auto">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;border-top:2px solid #201e1d">
+        <span style="font-size:11px;color:#7d7979;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ authEmailLabel }}</span>
+        <button onClick="{{ logout }}" style="border:0;background:transparent;padding:0;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#ae1800;cursor:pointer;flex:none" style-hover="color:#ec3013">Çıkış</button>
+      </div>
+      <a href="index.html" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-top:2px solid #201e1d;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase" style-hover="background:#ffe0d9;color:#ae1800">
+        <span>Siteyi görüntüle</span><span style="color:#ec3013">↗</span>
+      </a>
+    </div>
   </aside>
 
   <main style="min-width:0;padding:32px 40px 64px">
@@ -60,6 +164,19 @@
         </div>
       </sc-if>
     </div>
+
+    <sc-if value="{{ hasSaveError }}" hint-placeholder-val="{{ false }}">
+      <div style="margin:-14px 0 24px;padding:12px 16px;border:2px solid #ae1800;background:#fff2ef;color:#ae1800;font-size:13px;font-weight:600">Kaydedilemedi, bağlantını kontrol edip tekrar dene.</div>
+    </sc-if>
+    <sc-if value="{{ isUploading }}" hint-placeholder-val="{{ false }}">
+      <div style="margin:-14px 0 24px;padding:12px 16px;border:2px solid #201e1d;background:#eae9e9;color:#201e1d;font-size:13px;font-weight:600">Resim yükleniyor…</div>
+    </sc-if>
+    <sc-if value="{{ hasUploadError }}" hint-placeholder-val="{{ false }}">
+      <div style="margin:-14px 0 24px;padding:12px 16px;border:2px solid #ae1800;background:#fff2ef;color:#ae1800;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:16px">
+        <span>{{ uploadError }}</span>
+        <button onClick="{{ dismissUploadError }}" style="border:0;background:transparent;color:#ae1800;font-weight:800;cursor:pointer;font-size:16px;line-height:1">×</button>
+      </div>
+    </sc-if>
 
     <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
       <div style="display:flex;flex-direction:column;gap:22px;max-width:720px">
@@ -125,6 +242,10 @@
         <label style="display:flex;flex-direction:column;gap:8px">
           <span style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#605d5d">Kapanış metni (en alt, imzanın üstünde)</span>
           <textarea rows="2" value="{{ aClosing }}" onChange="{{ onAClosing }}" style="border:2px solid #201e1d;background:#f3f2f2;padding:12px 14px;font-size:15px;color:#201e1d;resize:vertical"></textarea>
+        </label>
+        <label style="display:flex;flex-direction:column;gap:8px">
+          <span style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#605d5d">İmza</span>
+          <input value="{{ aSignature }}" onChange="{{ onASignature }}" style="border:2px solid #201e1d;background:#f3f2f2;padding:12px 14px;font-size:15px;color:#201e1d">
         </label>
         <div style="height:2px;background:#201e1d;margin:8px 0"></div>
         <span style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#ec3013">Gelişmeler / eğitim</span>
@@ -330,6 +451,7 @@
     </sc-if>
 
   </main>
+  </sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:800}}">
@@ -337,10 +459,21 @@ class Component extends DCLogic {
   state = {
     tab: "home",
     savedFlash: false,
+    saveError: false,
+    uploadingCount: 0,
+    uploadError: "",
     photo: null,
+    auth: {
+      phase: "checking", mode: "login",
+      email: null,
+      setupToken: "", setupEmail: "", setupPass: "", setupError: "", setupBusy: false,
+      loginEmail: "", loginPass: "", loginError: "", loginBusy: false,
+      forgotEmail: "", forgotSent: false, forgotBusy: false, forgotError: "",
+      resetToken: "", resetPass: "", resetDone: false, resetBusy: false, resetError: ""
+    },
     home: {
       kicker: "Makine mühendisi · Optisyen · Uygulama geliştirici",
-      intro: "İyi bir dijital ürün; doğru soruyu sormak, karmaşığı sadeleştirmek ve detaylara özen göstermekle başlar. Ben de fikirleri, insanların gerçekten kullanmak isteyeceği deneyimlere dönüştürüyorum.",
+      intro: "İyi dijital ürün; doğru soru, karmaşığı sadeleştirmek ve özen göstermekle başlar. Ben fikirleri, insanların gerçekten kullanmak isteyeceği deneyimlere dönüştürüyorum.",
       l1: "Pazar günü Netflix", l2: "izleyenden", l3: "girişimci olmaz.",
       poster: "Her gün bir adım daha...",
       quote: "Ürününün ilk versiyonu seni utandırmıyorsa, çok geç kalmışsındır.",
@@ -348,10 +481,11 @@ class Component extends DCLogic {
       quoteRole: "LinkedIn'in Kurucusu"
     },
     about: {
-      p0: "Oğuzhan Günay 1999 yılında İstanbul'da doğmuştur ve 2023 yılında eğitim hayatını tamamlayıp iş hayatına atılmıştır. Optik sektöründe ustalarından ve aldığı eğitimlerde teorik kaynaklardan edindiği bilgiyle kendini sürekli geliştirmiştir.\n\nOğuzhan Günay, emeğe saygı, %100 müşteri memnuniyeti ve \u201cönce sağlık\u201d ilkelerini temel prensip haline getirmiştir.",
+      p0: "Oğuzhan Günay, 1999 yılında İstanbul'da doğdu. Eğitim hayatını 2023 yılında tamamlayarak profesyonel iş hayatına adım attı. Aile mesleği olan optik sektöründe, mesleğin ustalarından edindiği deneyimi akademik ve teorik eğitimleriyle birleştirerek kendini geliştirmeye devam etmektedir.\n\nMakine mühendisliği eğitimine Yeditepe Üniversitesi'nde başlayan Oğuzhan Günay, eğitimini Nişantaşı Üniversitesi'nde tamamladı. Üniversite yıllarında teorik eğitiminin yanı sıra okul bünyesinde uygulamalı çalışmalar gerçekleştirdi; Tuzla tersaneler bölgesi başta olmak üzere çeşitli işletmelerde yaptığı stajlarla saha deneyimi kazandı. Bu süreçte makine mühendisliğinin temel prensiplerini, teknik düşünme yaklaşımını ve problem çözme disiplinini hem teorik hem de pratik açıdan geliştirdi.\n\nMakine mühendisliği eğitiminin ardından Medipol Üniversitesi'nde optisyenlik eğitimi aldı. Böylece çocukluğundan itibaren içinde bulunduğu aile mesleğindeki tecrübesini akademik bilgiyle destekleyerek optik alanındaki mesleki birikimini güçlendirdi.",
       closing: "İşimiz memleketimiz, halkımız velinimetimizdir. Allah tüm müşterilerimizden razı olsun.",
-      p1: "Oğuzhan Günay, makine mühendisliği eğitiminin temellerini Yeditepe Üniversitesi'nde görmüş olup sonrasında Nişantaşı Üniversitesi'nden mezun olmuştur. Daha sonrasında Medipol Üniversitesi'nde optisyenlik eğitimi almıştır.",
-      p2: "Şu anda aile mesleği olan gözlükçülük/optisyenlik yapmaktadır. Aynı zamanda kişisel gelişim ve girişimcilikle ilgili olup uygulama geliştirmektedir.",
+      signature: "Çetin Günay",
+      p1: "Bugün aktif olarak aile şirketi Çetin Optik bünyesinde çalışmalarını sürdürmekte; edindiği bilgi birikimi ve deneyimi optik sektörüne aktarmaya devam etmektedir. Mesleki yaklaşımında emeğe saygı, %100 müşteri memnuniyeti ve \u201cönce sağlık\u201d ilkelerini temel prensipleri olarak benimsemektedir.",
+      p2: "Optik alanındaki çalışmalarının yanında kişisel gelişim, girişimcilik ve teknolojiyle de yakından ilgilenmektedir. Fikirlerini dijital ürünlere dönüştürerek mobil uygulamalar geliştirmekte; farklı disiplinlerde edindiği bilgi ve deneyimleri teknoloji ve girişimcilikle bir araya getirmeye devam etmektedir.",
       edu: [
         { date: "", label: "Yeditepe", text: "Makine Mühendisliği — temel eğitim" },
         { date: "", label: "Nişantaşı", text: "Makine Mühendisliği — mezuniyet" },
@@ -390,24 +524,132 @@ class Component extends DCLogic {
     ]
   };
 
-  componentDidMount() {
+  async componentDidMount() {
+    let resetToken = "";
     try {
-      const c = localStorage.getItem("ngu-site-content");
-      if (c) {
-        const d = JSON.parse(c);
-        this.setState((s) => ({
-          home: { ...s.home, ...(d.home || {}) },
-          about: { ...s.about, ...(d.about || {}) },
-          projects: d.projects || s.projects,
-          projectsIntro: d.projectsIntro || s.projectsIntro,
-          accounts: d.accounts || s.accounts,
-          contact: d.contact ? { ...s.contact, ...d.contact } : s.contact,
-          photo: d.photo || null
-        }));
-      }
-      const m = localStorage.getItem("ngu-messages");
-      if (m) this.setState({ messages: JSON.parse(m) });
+      resetToken = new URLSearchParams(window.location.search).get("reset") || "";
     } catch (e) {}
+
+    if (resetToken) {
+      this.setAuth({ phase: "reset", resetToken });
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/auth/session");
+      const data = await res.json();
+      if (!data.setupDone) {
+        this.setAuth({ phase: "setup" });
+        return;
+      }
+      if (!data.authed) {
+        this.setAuth({ phase: "login" });
+        return;
+      }
+      this.setAuth({ phase: "ready", email: data.email });
+      await this.loadContent();
+    } catch (e) {
+      this.setAuth({ phase: "login", loginError: "Sunucuya bağlanılamadı." });
+    }
+  }
+
+  setAuth(patch) {
+    this.setState((s) => ({ auth: { ...s.auth, ...patch } }));
+  }
+
+  async loadContent() {
+    try {
+      const [contentRes, messagesRes] = await Promise.all([fetch("/api/content"), fetch("/api/messages")]);
+      const d = contentRes.ok ? await contentRes.json() : {};
+      const messages = messagesRes.ok ? await messagesRes.json() : [];
+      this.setState((s) => ({
+        home: { ...s.home, ...(d.home || {}) },
+        about: { ...s.about, ...(d.about || {}) },
+        projects: d.projects || s.projects,
+        projectsIntro: d.projectsIntro || s.projectsIntro,
+        accounts: d.accounts || s.accounts,
+        contact: d.contact ? { ...s.contact, ...d.contact } : s.contact,
+        photo: d.photo || null,
+        messages: Array.isArray(messages) ? messages : []
+      }));
+    } catch (e) {}
+  }
+
+  async doSetup() {
+    const a = this.state.auth;
+    if (a.setupBusy) return;
+    this.setAuth({ setupBusy: true, setupError: "" });
+    try {
+      const res = await fetch("/api/auth/setup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: a.setupEmail, password: a.setupPass, setupToken: a.setupToken })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Kurulum başarısız.");
+      this.setAuth({ phase: "login", setupBusy: false, loginEmail: a.setupEmail });
+    } catch (e) {
+      this.setAuth({ setupBusy: false, setupError: e.message });
+    }
+  }
+
+  async doLogin() {
+    const a = this.state.auth;
+    if (a.loginBusy) return;
+    this.setAuth({ loginBusy: true, loginError: "" });
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: a.loginEmail, password: a.loginPass })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Giriş başarısız.");
+      this.setAuth({ phase: "ready", email: data.email, loginBusy: false });
+      await this.loadContent();
+    } catch (e) {
+      this.setAuth({ loginBusy: false, loginError: e.message });
+    }
+  }
+
+  async doForgot() {
+    const a = this.state.auth;
+    if (a.forgotBusy) return;
+    this.setAuth({ forgotBusy: true, forgotError: "" });
+    try {
+      const res = await fetch("/api/auth/forgot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: a.forgotEmail })
+      });
+      if (!res.ok) throw new Error("İstek gönderilemedi.");
+      this.setAuth({ forgotBusy: false, forgotSent: true });
+    } catch (e) {
+      this.setAuth({ forgotBusy: false, forgotError: e.message });
+    }
+  }
+
+  async doReset() {
+    const a = this.state.auth;
+    if (a.resetBusy) return;
+    this.setAuth({ resetBusy: true, resetError: "" });
+    try {
+      const res = await fetch("/api/auth/reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: a.resetToken, password: a.resetPass })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "İşlem başarısız.");
+      this.setAuth({ resetBusy: false, resetDone: true });
+    } catch (e) {
+      this.setAuth({ resetBusy: false, resetError: e.message });
+    }
+  }
+
+  async logout() {
+    try { await fetch("/api/auth/logout", { method: "POST" }); } catch (e) {}
+    window.location.href = "Admin Paneli.dc.html";
   }
 
   slug(t) {
@@ -417,12 +659,30 @@ class Component extends DCLogic {
       .replace(/[^a-z0-9]/g, "");
   }
 
-  readImg(e, cb) {
+  async uploadImg(e, cb) {
     const f = e.target.files && e.target.files[0];
+    e.target.value = "";
     if (!f) return;
-    const r = new FileReader();
-    r.onload = () => cb(r.result);
-    r.readAsDataURL(f);
+    const MAX_BYTES = 8 * 1024 * 1024;
+    if (!/^image\/(jpeg|png|webp|gif)$/.test(f.type)) {
+      this.setState({ uploadError: "Desteklenmeyen dosya türü. JPG, PNG, WEBP veya GIF kullan." });
+      return;
+    }
+    if (f.size > MAX_BYTES) {
+      this.setState({ uploadError: "Dosya çok büyük (en fazla 8 MB)." });
+      return;
+    }
+    this.setState({ uploadError: "", uploadingCount: (this.state.uploadingCount || 0) + 1 });
+    try {
+      const res = await fetch("/api/upload", { method: "POST", headers: { "Content-Type": f.type }, body: f });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Yükleme başarısız.");
+      cb(data.url);
+    } catch (err) {
+      this.setState({ uploadError: err.message || "Yükleme başarısız." });
+    } finally {
+      this.setState((s) => ({ uploadingCount: Math.max(0, (s.uploadingCount || 0) - 1) }));
+    }
   }
 
   setShot(i, j, val) {
@@ -435,7 +695,11 @@ class Component extends DCLogic {
   }
 
   persistMsgs() {
-    try { localStorage.setItem("ngu-messages", JSON.stringify(this.state.messages)); } catch (e) {}
+    fetch("/api/messages", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(this.state.messages)
+    }).catch(() => {});
   }
 
   set(path, val) {
@@ -460,7 +724,51 @@ class Component extends DCLogic {
     const goTab = (t) => () => this.setState({ tab: t, savedFlash: false });
     const unread = s.messages.filter((m) => !m.read).length;
 
+    const a = s.auth;
+
     return {
+      isChecking: a.phase === "checking",
+      isSetup: a.phase === "setup",
+      isLogin: a.phase === "login",
+      isLoginMode: a.phase === "login" && a.mode !== "forgot",
+      isForgotMode: a.phase === "login" && a.mode === "forgot",
+      isReset: a.phase === "reset",
+      isReady: a.phase === "ready",
+      authEmailLabel: a.email || "",
+
+      setupTokenVal: a.setupToken, onSetupToken: (e) => this.setAuth({ setupToken: e.target.value }),
+      setupEmailVal: a.setupEmail, onSetupEmail: (e) => this.setAuth({ setupEmail: e.target.value }),
+      setupPassVal: a.setupPass, onSetupPass: (e) => this.setAuth({ setupPass: e.target.value }),
+      setupError: a.setupError, hasSetupError: !!a.setupError,
+      setupBtnLabel: a.setupBusy ? "Oluşturuluyor…" : "Hesabı oluştur",
+      doSetup: () => this.doSetup(),
+      onSetupSubmit: (e) => { e.preventDefault(); this.doSetup(); },
+
+      loginEmailVal: a.loginEmail, onLoginEmail: (e) => this.setAuth({ loginEmail: e.target.value }),
+      loginPassVal: a.loginPass, onLoginPass: (e) => this.setAuth({ loginPass: e.target.value }),
+      loginError: a.loginError, hasLoginError: !!a.loginError,
+      loginBtnLabel: a.loginBusy ? "Giriş yapılıyor…" : "Giriş yap",
+      doLogin: () => this.doLogin(),
+      onLoginSubmit: (e) => { e.preventDefault(); this.doLogin(); },
+      toForgot: () => this.setAuth({ mode: "forgot", loginError: "" }),
+      toLogin: () => this.setAuth({ mode: "login", forgotSent: false, forgotError: "" }),
+
+      forgotEmailVal: a.forgotEmail, onForgotEmail: (e) => this.setAuth({ forgotEmail: e.target.value }),
+      forgotSent: a.forgotSent, forgotNotSent: !a.forgotSent,
+      forgotError: a.forgotError, hasForgotError: !!a.forgotError,
+      forgotBtnLabel: a.forgotBusy ? "Gönderiliyor…" : "Sıfırlama bağlantısı gönder",
+      doForgot: () => this.doForgot(),
+
+      resetPassVal: a.resetPass, onResetPass: (e) => this.setAuth({ resetPass: e.target.value }),
+      resetDone: a.resetDone, resetNotDone: !a.resetDone,
+      resetError: a.resetError, hasResetError: !!a.resetError,
+      resetBtnLabel: a.resetBusy ? "Kaydediliyor…" : "Şifreyi güncelle",
+      doReset: () => this.doReset(),
+      onResetSubmit: (e) => { e.preventDefault(); this.doReset(); },
+      gotoLoginFresh: () => { window.location.href = "Admin Paneli.dc.html"; },
+
+      logout: () => this.logout(),
+
       tabTitle: titles[tab],
       isHome: tab === "home", isAbout: tab === "about", isProjects: tab === "projects",
       isAccounts: tab === "accounts", isMessages: tab === "messages", isContactPage: tab === "contact",
@@ -472,16 +780,35 @@ class Component extends DCLogic {
       hasUnread: unread > 0, unreadCount: unread,
       showSave: tab !== "messages",
       savedFlash: s.savedFlash,
+      saveError: s.saveError, hasSaveError: !!s.saveError,
+      isUploading: (s.uploadingCount || 0) > 0,
+      uploadError: s.uploadError, hasUploadError: !!s.uploadError,
+      dismissUploadError: () => this.setState({ uploadError: "" }),
       save: () => {
-        try {
-          const st = this.state;
-          localStorage.setItem("ngu-site-content", JSON.stringify({
-            home: st.home, about: st.about, projects: st.projects, projectsIntro: st.projectsIntro, accounts: st.accounts, contact: st.contact, photo: st.photo
-          }));
-        } catch (e) {}
-        this.setState({ savedFlash: true });
-        clearTimeout(this._t);
-        this._t = setTimeout(() => this.setState({ savedFlash: false }), 2500);
+        const st = this.state;
+        (async () => {
+          try {
+            const res = await fetch("/api/content", {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                home: st.home, about: st.about, projects: st.projects,
+                projectsIntro: st.projectsIntro, accounts: st.accounts,
+                contact: st.contact, photo: st.photo
+              })
+            });
+            if (res.status === 401) {
+              this.setAuth({ phase: "login", loginError: "Oturum sona erdi, tekrar giriş yap." });
+              return;
+            }
+            if (!res.ok) throw new Error();
+            this.setState({ savedFlash: true, saveError: false });
+            clearTimeout(this._t);
+            this._t = setTimeout(() => this.setState({ savedFlash: false }), 2500);
+          } catch (e) {
+            this.setState({ saveError: true });
+          }
+        })();
       },
       hKicker: s.home.kicker, onHKicker: (e) => this.set("home.kicker", e.target.value),
       hIntro: s.home.intro, onHIntro: (e) => this.set("home.intro", e.target.value),
@@ -495,15 +822,12 @@ class Component extends DCLogic {
       hasPhoto: !!s.photo, noPhoto: !s.photo,
       photoCss: "position:absolute;inset:0;width:100%;height:100%;background:url(" + s.photo + ") center/cover;filter:grayscale(1)",
       onPhoto: (e) => {
-        const f = e.target.files && e.target.files[0];
-        if (!f) return;
-        const r = new FileReader();
-        r.onload = () => this.setState({ photo: r.result });
-        r.readAsDataURL(f);
+        this.uploadImg(e, (u) => this.setState({ photo: u }));
       },
       delPhoto: () => this.setState({ photo: null }),
       aP0: s.about.p0, onAP0: (e) => this.set("about.p0", e.target.value),
       aClosing: s.about.closing, onAClosing: (e) => this.set("about.closing", e.target.value),
+      aSignature: s.about.signature, onASignature: (e) => this.set("about.signature", e.target.value),
       aP1: s.about.p1, onAP1: (e) => this.set("about.p1", e.target.value),
       aP2: s.about.p2, onAP2: (e) => this.set("about.p2", e.target.value),
       eduList: s.about.edu.map((r, i) => ({
@@ -534,14 +858,14 @@ class Component extends DCLogic {
         onStatus: (e) => this.set("projects." + i + ".status", e.target.value),
         hasIcon: !!p.icon,
         iconCss: "width:72px;height:72px;border:2px solid #201e1d;" + (p.icon ? "background:url(" + p.icon + ") center/cover" : "background:repeating-linear-gradient(135deg,#eae9e9 0 8px,#f3f2f2 8px 16px)"),
-        onIcon: (e) => this.readImg(e, (u) => this.set("projects." + i + ".icon", u)),
+        onIcon: (e) => this.uploadImg(e, (u) => this.set("projects." + i + ".icon", u)),
         delIcon: () => this.set("projects." + i + ".icon", ""),
         shotList: [0, 1, 2].map((j) => {
           const src = (Array.isArray(p.shots) ? p.shots[j] : "") || "";
           return {
             n: j + 1, hasImg: !!src,
             css: "width:76px;height:160px;border:2px solid #201e1d;" + (src ? "background:url(" + src + ") center/cover" : "background:repeating-linear-gradient(135deg,#eae9e9 0 8px,#f3f2f2 8px 16px)"),
-            onPick: (e) => this.readImg(e, (u) => this.setShot(i, j, u)),
+            onPick: (e) => this.uploadImg(e, (u) => this.setShot(i, j, u)),
             del: () => this.setShot(i, j, "")
           };
         }),

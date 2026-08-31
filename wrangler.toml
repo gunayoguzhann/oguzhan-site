@@ -1,0 +1,16 @@
+name = "oguzhangunay-site"
+compatibility_date = "2026-08-01"
+pages_build_output_dir = "."
+
+# Bound in the Cloudflare Pages dashboard under
+# Settings > Functions > KV namespace bindings (binding name: SITE_KV).
+# This local declaration only matters for `wrangler pages dev`.
+[[kv_namespaces]]
+binding = "SITE_KV"
+id = "local-dev-placeholder"
+
+# Bound in the Cloudflare Pages dashboard under
+# Settings > Functions > R2 bucket bindings (binding name: SITE_IMAGES).
+[[r2_buckets]]
+binding = "SITE_IMAGES"
+bucket_name = "oguzhan-site-images"
