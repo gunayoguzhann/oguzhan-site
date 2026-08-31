@@ -27,7 +27,7 @@ export async function onRequestPost({ request, env }) {
   });
 
   const origin = new URL(request.url).origin;
-  const resetUrl = `${origin}/Admin%20Paneli.dc.html?reset=${token}`;
+  const resetUrl = `${origin}/admin?reset=${token}`;
   try {
     await sendEmail(env, {
       to: account.email,

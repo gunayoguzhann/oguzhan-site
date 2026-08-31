@@ -649,7 +649,7 @@ class Component extends DCLogic {
 
   async logout() {
     try { await fetch("/api/auth/logout", { method: "POST" }); } catch (e) {}
-    window.location.href = "Admin Paneli.dc.html";
+    window.location.href = "/admin";
   }
 
   slug(t) {
@@ -765,7 +765,7 @@ class Component extends DCLogic {
       resetBtnLabel: a.resetBusy ? "Kaydediliyor…" : "Şifreyi güncelle",
       doReset: () => this.doReset(),
       onResetSubmit: (e) => { e.preventDefault(); this.doReset(); },
-      gotoLoginFresh: () => { window.location.href = "Admin Paneli.dc.html"; },
+      gotoLoginFresh: () => { window.location.href = "/admin"; },
 
       logout: () => this.logout(),
 
