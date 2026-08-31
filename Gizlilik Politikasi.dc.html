@@ -129,6 +129,16 @@ class Component extends DCLogic {
     this.setState({ nguAnimOpen: false });
   }
 
+  updateCleanPathLang(langCode) {
+    if (typeof window === "undefined") return;
+    const path = (window.location.pathname || "").replace(/^\/+|\/+$/g, "").toLowerCase();
+    if (path !== "gizlilikpolitikasi" && path !== "privacypolicy") return;
+    const newPath = "/" + (langCode === "tr" ? "gizlilikpolitikasi" : "privacypolicy");
+    if (window.location.pathname !== newPath) {
+      window.history.pushState({}, "", newPath + window.location.search);
+    }
+  }
+
   async componentDidMount() {
     try {
       const path = (window.location.pathname || "").replace(/^\/+|\/+$/g, "").toLowerCase();
@@ -211,8 +221,8 @@ class Component extends DCLogic {
     return {
       tr, en: !tr, langAttr: tr ? "tr" : "en",
       trBtn: seg(tr), enBtn: seg(!tr),
-      setTr: () => this.setState({ lang: "tr" }),
-      setEn: () => this.setState({ lang: "en" }),
+      setTr: () => { this.setState({ lang: "tr" }); this.updateCleanPathLang("tr"); },
+      setEn: () => { this.setState({ lang: "en" }); this.updateCleanPathLang("en"); },
       nguAnimOpen: this.state.nguAnimOpen,
       triggerNguAnim: (e) => this.triggerNguAnim(e),
       closeNguAnim: () => this.closeNguAnim(),
