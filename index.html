@@ -395,14 +395,14 @@
               </label>
               <label style="display:flex;flex-direction:column;gap:8px">
                 <span style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#605d5d"><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">E-posta</sc-if><sc-if value="{{ en }}">Email</sc-if></span>
-                <input value="{{ fMail }}" onChange="{{ onMail }}" style="border:2px solid #201e1d;background:#f3f2f2;padding:13px 14px;font-size:16px;color:#201e1d">
+                <input type="email" value="{{ fMail }}" onChange="{{ onMail }}" style="border:2px solid #201e1d;background:#f3f2f2;padding:13px 14px;font-size:16px;color:#201e1d">
               </label>
               <label style="display:flex;flex-direction:column;gap:8px">
                 <span style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#605d5d"><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Mesaj</sc-if><sc-if value="{{ en }}">Message</sc-if></span>
                 <textarea rows="6" value="{{ fMsg }}" onChange="{{ onMsg }}" style="border:2px solid #201e1d;background:#f3f2f2;padding:13px 14px;font-size:16px;color:#201e1d;resize:vertical"></textarea>
               </label>
-              <sc-if value="{{ sendError }}" hint-placeholder-val="{{ false }}">
-                <p style="margin:0;font-size:13px;font-weight:600;color:#ae1800"><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Mesaj gönderilemedi, lütfen tekrar dene.</sc-if><sc-if value="{{ en }}">Couldn't send the message, please try again.</sc-if></p>
+              <sc-if value="{{ formError }}" hint-placeholder-val="{{ false }}">
+                <p style="margin:0;font-size:13px;font-weight:600;color:#ae1800">{{ errorText }}</p>
               </sc-if>
               <button onClick="{{ send }}" style="align-self:flex-start;background:#ec3013;color:#fff;border:2px solid #ec3013;padding:15px 26px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;text-align:left" style-hover="background:#dd2b0f;border-color:#dd2b0f">
                 <sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Mesajı gönder</sc-if><sc-if value="{{ en }}">Send message</sc-if>
@@ -465,7 +465,7 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;defaultLang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;tr&quot;,&quot;en&quot;],&quot;default&quot;:&quot;tr&quot;,&quot;tsType&quot;:&quot;'tr' | 'en'&quot;},&quot;showClosingBanner&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
 class Component extends DCLogic {
-  state = { lang: null, page: "home", proj: 0, sent: false, sendError: false, name: "", mail: "", msg: "", cms: null, menuOpen: false, nguAnimOpen: false };
+  state = { lang: null, page: "home", proj: 0, sent: false, formError: null, name: "", mail: "", msg: "", cms: null, menuOpen: false, nguAnimOpen: false };
 
   async componentDidMount() {
     let c = null;
@@ -800,11 +800,18 @@ class Component extends DCLogic {
       onName: (e) => this.setState({ name: e.target.value }),
       onMail: (e) => this.setState({ mail: e.target.value }),
       onMsg: (e) => this.setState({ msg: e.target.value }),
-      sendError: this.state.sendError,
+      formError: this.state.formError,
+      errorText: this.state.formError === "email"
+        ? (tr ? "Geçerli bir e-posta adresi gir, sana geri dönebilelim." : "Enter a valid email address so we can reply to you.")
+        : (tr ? "Mesaj gönderilemedi, lütfen tekrar dene." : "Couldn't send the message, please try again."),
       send: () => {
         const name = this.state.name || (tr ? "İsimsiz" : "Anonymous");
-        const email = this.state.mail || "—";
+        const email = (this.state.mail || "").trim();
         const body = this.state.msg || "";
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          this.setState({ formError: "email" });
+          return;
+        }
         (async () => {
           try {
             const res = await fetch("/api/messages", {
@@ -813,13 +820,13 @@ class Component extends DCLogic {
               body: JSON.stringify({ name, email, body })
             });
             if (!res.ok) throw new Error();
-            this.setState({ sent: true, sendError: false });
+            this.setState({ sent: true, formError: null });
           } catch (e) {
-            this.setState({ sendError: true });
+            this.setState({ formError: "network" });
           }
         })();
       },
-      reset: () => this.setState({ sent: false, sendError: false, name: "", mail: "", msg: "" })
+      reset: () => this.setState({ sent: false, formError: null, name: "", mail: "", msg: "" })
     };
   }
 }
