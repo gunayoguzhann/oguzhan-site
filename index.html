@@ -71,7 +71,7 @@
 
   <header style="position:sticky;top:0;z-index:20;background:#f3f2f2;border-bottom:2px solid #201e1d">
     <div class="container" style="max-width:1320px;margin:0 auto;padding:0 32px;display:flex;align-items:stretch;justify-content:space-between;gap:32px;height:68px">
-      <a href="#top" style="display:flex;align-items:center;gap:14px">
+      <a href="#top" onClick="{{ goHome }}" style="display:flex;align-items:center;gap:14px">
         <span onClick="{{ triggerNguAnim }}" style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#ec3013;color:#fff;font-weight:900;font-size:13px;letter-spacing:.04em;cursor:pointer">NGU</span>
         <span style="font-weight:700;font-size:15px;letter-spacing:-0.01em">Oğuzhan Günay</span>
       </a>
@@ -500,6 +500,7 @@ class Component extends DCLogic {
 
   triggerNguAnim(e) {
     if (e && e.preventDefault) e.preventDefault();
+    if (e && e.stopPropagation) e.stopPropagation();
     this.setState({ nguAnimOpen: true });
     clearTimeout(this._nguT);
     this._nguT = setTimeout(() => this.setState({ nguAnimOpen: false }), 2800);
