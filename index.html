@@ -464,6 +464,16 @@
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;defaultLang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;tr&quot;,&quot;en&quot;],&quot;default&quot;:&quot;tr&quot;,&quot;tsType&quot;:&quot;'tr' | 'en'&quot;},&quot;showClosingBanner&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+// Account labels are admin-authored free text with no per-language field.
+// Brand names (GitHub, Instagram...) don't need translating, but generic
+// words like "E-posta" do when the site is switched to English.
+function translateAccountLabel(label, tr) {
+  if (tr) return label;
+  const key = (label || "").trim().toLowerCase();
+  if (key === "e-posta" || key === "e posta" || key === "eposta") return "Email";
+  return label;
+}
+
 class Component extends DCLogic {
   state = { lang: null, page: "home", proj: 0, sent: false, formError: null, name: "", mail: "", msg: "", cms: null, menuOpen: false, nguAnimOpen: false };
 
@@ -695,7 +705,10 @@ class Component extends DCLogic {
       { date: "", label: "Medipol", text: tr ? "Optisyenlik" : "Optometry" },
       { date: "", label: tr ? "Bugün" : "Today", text: tr ? "Optisyen · Uygulama geliştirme · Girişimcilik" : "Optician · App development · Entrepreneurship" }
     ];
-    const eduSrc = (ca.edu && ca.edu.length) ? ca.edu : eduDef;
+    // ca.edu is admin-authored free text (Turkish only, no per-language field),
+    // so it can only be trusted in tr mode; en always falls back to the
+    // translated defaults above rather than showing untranslated Turkish.
+    const eduSrc = tr ? ((ca.edu && ca.edu.length) ? ca.edu : eduDef) : eduDef;
     const posterDef1 = tr ? "Her gün bir" : "One more step,";
     const posterDef2 = tr ? "adım daha..." : "every day...";
     let posterL1 = posterDef1, posterL2 = posterDef2;
@@ -725,7 +738,9 @@ class Component extends DCLogic {
         ? (ca.p0 || "Oğuzhan Günay, 1999 yılında İstanbul'da doğdu. Eğitim hayatını 2023 yılında tamamlayarak profesyonel iş hayatına adım attı. Aile mesleği olan optik sektöründe edindiği deneyimi, akademik eğitimiyle birleştirerek kendini geliştirmeye devam etmektedir.\n\nMakine mühendisliği eğitimine Yeditepe Üniversitesi'nde başladı ve Nişantaşı Üniversitesi'nde tamamladı. Üniversite yıllarında uygulamalı eğitimlerin yanı sıra Tuzla tersaneler bölgesi ve çeşitli işletmelerde yaptığı stajlarla saha deneyimi kazandı.")
         : "Oğuzhan Günay was born in Istanbul in 1999 and entered working life in 2023 after completing his education. In the optical trade he has continuously improved himself with knowledge gained from his masters and from theoretical sources during his training.\n\nHe has made respect for labour, 100% customer satisfaction and \u201chealth first\u201d his core principles."
       ).split(/\n\s*\n|\n/).filter(Boolean).map((t) => ({ text: t })),
-      aboutClosing: ca.closing || "İşimiz memleketimiz, halkımız velinimetimizdir. Allah tüm müşterilerimizden razı olsun.",
+      aboutClosing: tr
+        ? (ca.closing || "İşimiz memleketimiz, halkımız velinimetimizdir. Allah tüm müşterilerimizden razı olsun.")
+        : "This work is our homeland, our people are our purpose — may every customer we serve be content.",
       aboutSignature: ca.signature || "Çetin Günay",
       hasPhoto: !!cms.photo, noPhoto: !cms.photo,
       photoCss: "position:absolute;inset:0;width:100%;height:100%;background:url(" + cms.photo + ") center/cover;filter:grayscale(1)",
@@ -765,7 +780,7 @@ class Component extends DCLogic {
       goProjects: (e) => { if (e && e.preventDefault) e.preventDefault(); this.go("projects"); },
       goContact: (e) => { if (e && e.preventDefault) e.preventDefault(); this.go("contact"); },
       accounts: (cms.accounts && cms.accounts.length) ? cms.accounts.map((a) => ({
-        label: a.label, href: a.href,
+        label: translateAccountLabel(a.label, tr), href: a.href,
         handle: (a.href || "").replace(/^https?:\/\/(www\.)?/, "").replace(/^mailto:/, "")
       })) : [
         { label: "GitHub", handle: "gunayoguzhann", href: "https://github.com/gunayoguzhann" },
@@ -773,7 +788,7 @@ class Component extends DCLogic {
         { label: "Instagram", handle: "@oguzhangunay", href: "https://instagram.com/oguzhangunay" },
         { label: "App Store", handle: "Optiva · Picolori", href: "#projeler" },
         { label: "Google Play", handle: "Optiva · Picolori", href: "#projeler" },
-        { label: "E-posta", handle: "oguzhan.gny72@gmail.com", href: "mailto:oguzhan.gny72@gmail.com" }
+        { label: tr ? "E-posta" : "Email", handle: "oguzhan.gny72@gmail.com", href: "mailto:oguzhan.gny72@gmail.com" }
       ],
       contactMail: (cms.contact && cms.contact.email) || "oguzhan.gny72@gmail.com",
       contactMailHref: "mailto:" + ((cms.contact && cms.contact.email) || "oguzhan.gny72@gmail.com"),
@@ -782,14 +797,14 @@ class Component extends DCLogic {
         : "Write for collaborations, app suggestions, or anything optics related.",
       contactAccounts: (cms.contact && cms.contact.accounts && cms.contact.accounts.length)
         ? cms.contact.accounts.map((a) => ({
-            label: a.label, href: a.href,
+            label: translateAccountLabel(a.label, tr), href: a.href,
             handle: (a.href || "").replace(/^https?:\/\/(www\.)?/, "").replace(/^mailto:/, "")
           }))
         : [
             { label: "GitHub", handle: "gunayoguzhann", href: "https://github.com/gunayoguzhann" },
             { label: "LinkedIn", handle: "oguzhangunay", href: "https://linkedin.com/in/oguzhangunay" },
             { label: "Instagram", handle: "@oguzhangunay", href: "https://instagram.com/oguzhangunay" },
-            { label: "E-posta", handle: "oguzhan.gny72@gmail.com", href: "mailto:oguzhan.gny72@gmail.com" }
+            { label: tr ? "E-posta" : "Email", handle: "oguzhan.gny72@gmail.com", href: "mailto:oguzhan.gny72@gmail.com" }
           ],
       projIntro: tr ? (cms.projectsIntro || "Her uygulamanın kendi gizlilik politikası sayfası, alt alan adı üzerinden yayınlanır.") : "Each app publishes its privacy policy on its own subdomain.",
       sitePrivacyHref: tr ? "/gizlilikpolitikasi" : "/privacypolicy",
