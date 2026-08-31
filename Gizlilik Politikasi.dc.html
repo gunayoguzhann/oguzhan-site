@@ -25,6 +25,25 @@
     .ppol-header{ flex-direction:column !important; align-items:flex-start !important; height:auto !important; gap:14px; padding-top:16px !important; padding-bottom:16px !important; }
     .ppol-header-right{ width:100%; justify-content:space-between !important; }
   }
+
+  .ngu-overlay{ animation: nguFadeIn .25s ease both; }
+  .ngu-glow{ animation: nguGlow 2.6s ease-out both; }
+  .ngu-mark{ animation: nguPop .7s cubic-bezier(.2,.9,.25,1.15) both; }
+  .ngu-sub{ animation: nguSub .5s ease .55s both; }
+  @keyframes nguFadeIn{ from{ opacity:0 } to{ opacity:1 } }
+  @keyframes nguGlow{
+    0%{ opacity:0; transform:scale(.55) }
+    16%{ opacity:1; transform:scale(1.25) }
+    45%{ opacity:.5; transform:scale(1) }
+    100%{ opacity:0; transform:scale(1) }
+  }
+  @keyframes nguPop{
+    0%{ transform:scale(2.4); opacity:0; letter-spacing:.5em }
+    55%{ transform:scale(.96); opacity:1; letter-spacing:.02em }
+    75%{ transform:scale(1.04) }
+    100%{ transform:scale(1); letter-spacing:.06em }
+  }
+  @keyframes nguSub{ from{ opacity:0; transform:translateY(10px) } to{ opacity:1; transform:translateY(0) } }
 </style>
 </helmet>
 
@@ -33,7 +52,7 @@
   <header style="border-bottom:2px solid #201e1d">
     <div class="container ppol-header" style="max-width:900px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:68px">
       <a href="index.html" style="display:flex;align-items:center;gap:14px">
-        <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#ec3013;color:#fff;font-weight:900;font-size:13px;letter-spacing:.04em">NGU</span>
+        <span onClick="{{ triggerNguAnim }}" style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#ec3013;color:#fff;font-weight:900;font-size:13px;letter-spacing:.04em;cursor:pointer">NGU</span>
         <span style="font-weight:700;font-size:15px">oguzhangunay.com</span>
       </a>
       <div class="ppol-header-right" style="display:flex;align-items:center;gap:20px">
@@ -45,6 +64,16 @@
       </div>
     </div>
   </header>
+
+  <sc-if value="{{ nguAnimOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeNguAnim }}" class="ngu-overlay" style="position:fixed;inset:0;z-index:9999;background:#201e1d;display:flex;align-items:center;justify-content:center;cursor:pointer">
+      <div style="position:relative;display:flex;flex-direction:column;align-items:center">
+        <div class="ngu-glow" style="position:absolute;inset:-60% -20%;border-radius:50%;background:radial-gradient(circle,rgba(236,48,19,0.55) 0%,rgba(236,48,19,0) 65%);filter:blur(6px);pointer-events:none"></div>
+        <span class="ngu-mark" style="position:relative;font-weight:900;font-size:clamp(72px,16vw,240px);line-height:1;letter-spacing:.06em;color:#fff">NGU</span>
+        <span class="ngu-sub" style="position:relative;margin-top:18px;font-size:clamp(13px,2vw,20px);font-weight:700;letter-spacing:.4em;text-transform:uppercase;color:#ec3013">never give up</span>
+      </div>
+    </div>
+  </sc-if>
 
   <main class="container" style="max-width:900px;margin:0 auto;padding:64px 32px 96px">
     <div style="font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#ec3013;margin-bottom:24px">{{ docTitle }}</div>
@@ -78,14 +107,27 @@
   <footer style="border-top:2px solid #201e1d">
     <div class="container" style="max-width:900px;margin:0 auto;padding:24px 32px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between">
       <span style="font-size:13px;color:#605d5d">© 2026 Oğuzhan Günay</span>
-      <span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#ec3013">NGU</span>
+      <span onClick="{{ triggerNguAnim }}" style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#ec3013;cursor:pointer">NGU</span>
     </div>
   </footer>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { cms: null, lang: "tr" };
+  state = { cms: null, lang: "tr", nguAnimOpen: false };
+
+  triggerNguAnim(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (e && e.stopPropagation) e.stopPropagation();
+    this.setState({ nguAnimOpen: true });
+    clearTimeout(this._nguT);
+    this._nguT = setTimeout(() => this.setState({ nguAnimOpen: false }), 2800);
+  }
+
+  closeNguAnim() {
+    clearTimeout(this._nguT);
+    this.setState({ nguAnimOpen: false });
+  }
 
   async componentDidMount() {
     try {
@@ -171,6 +213,9 @@ class Component extends DCLogic {
       trBtn: seg(tr), enBtn: seg(!tr),
       setTr: () => this.setState({ lang: "tr" }),
       setEn: () => this.setState({ lang: "en" }),
+      nguAnimOpen: this.state.nguAnimOpen,
+      triggerNguAnim: (e) => this.triggerNguAnim(e),
+      closeNguAnim: () => this.closeNguAnim(),
       isSiteDoc: isSite, isAppDoc: !isSite,
       backHref: isSite ? "index.html" : "index.html?app=" + this.slug(name),
       docTitle: isKvkk ? (tr ? "KVKK Aydınlatma Metni" : "KVKK Disclosure (Turkish DPA)") : (tr ? "Gizlilik Politikası" : "Privacy Policy"),
