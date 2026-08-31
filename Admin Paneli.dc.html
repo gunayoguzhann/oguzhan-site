@@ -456,11 +456,24 @@
               <span style="font-size:12px;color:#7d7979;white-space:nowrap">{{ m.date }}</span>
             </button>
             <sc-if value="{{ m.open }}">
-              <div style="padding:6px 8px 20px 38px;display:flex;flex-direction:column;gap:12px;align-items:flex-start">
+              <div style="padding:6px 8px 24px 38px;display:flex;flex-direction:column;gap:12px;align-items:flex-start;max-width:64ch">
                 <a href="{{ m.mailto }}" style="font-size:13px;font-weight:700;color:#ae1800">{{ m.email }}</a>
-                <p style="margin:0;font-size:15px;line-height:1.6;max-width:64ch">{{ m.body }}</p>
+                <p style="margin:0;font-size:15px;line-height:1.6">{{ m.body }}</p>
+                <sc-if value="{{ m.replied }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#1a7d3a">✓ Yanıtlandı</span>
+                </sc-if>
+                <label style="display:flex;flex-direction:column;gap:6px;width:100%">
+                  <span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#605d5d">Yanıt yaz</span>
+                  <textarea rows="4" value="{{ m.replyValue }}" onChange="{{ m.onReplyChange }}" placeholder="Yanıtını buraya yaz…" style="border:2px solid #201e1d;background:#f3f2f2;padding:10px 12px;font-size:14px;color:#201e1d;resize:vertical;width:100%;box-sizing:border-box"></textarea>
+                </label>
+                <sc-if value="{{ m.replyOk }}" hint-placeholder-val="{{ false }}">
+                  <p style="margin:0;font-size:12px;font-weight:600;color:#1a7d3a">Yanıtın {{ m.email }} adresine gönderildi.</p>
+                </sc-if>
+                <sc-if value="{{ m.replyError }}" hint-placeholder-val="{{ false }}">
+                  <p style="margin:0;font-size:12px;font-weight:600;color:#ae1800">Gönderilemedi, tekrar dene.</p>
+                </sc-if>
                 <div style="display:flex;gap:10px">
-                  <a href="{{ m.mailto }}" style="border:2px solid #201e1d;padding:8px 14px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase" style-hover="background:#ffe0d9;color:#ae1800">Yanıtla</a>
+                  <button onClick="{{ m.doSendReply }}" style="border:2px solid #ec3013;background:#ec3013;color:#fff;padding:8px 16px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer" style-hover="background:#dd2b0f;border-color:#dd2b0f">{{ m.sendLabel }}</button>
                   <button onClick="{{ m.del }}" style="border:2px solid #201e1d;background:transparent;padding:8px 14px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer" style-hover="background:#ec3013;color:#fff;border-color:#ec3013">Sil</button>
                 </div>
               </div>
@@ -486,6 +499,8 @@ class Component extends DCLogic {
     uploadingCount: 0,
     uploadError: "",
     photo: null,
+    replyDrafts: {},
+    replyStatus: {},
     auth: {
       phase: "checking", mode: "login",
       email: null,
@@ -735,6 +750,33 @@ class Component extends DCLogic {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(this.state.messages)
     }).catch(() => {});
+  }
+
+  setReplyDraft(id, val) {
+    this.setState((s) => ({ replyDrafts: { ...s.replyDrafts, [id]: val } }));
+  }
+
+  sendReply(id) {
+    const text = ((this.state.replyDrafts || {})[id] || "").trim();
+    if (!text || (this.state.replyStatus || {})[id] === "sending") return;
+    this.setState((s) => ({ replyStatus: { ...s.replyStatus, [id]: "sending" } }));
+    fetch("/api/messages/reply", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, reply: text })
+    })
+      .then((res) => res.json().then((data) => ({ ok: res.ok, data })))
+      .then(({ ok }) => {
+        if (!ok) throw new Error();
+        this.setState((s) => ({
+          replyStatus: { ...s.replyStatus, [id]: "sent" },
+          replyDrafts: { ...s.replyDrafts, [id]: "" },
+          messages: s.messages.map((m) => (m.id === id ? { ...m, replied: true } : m))
+        }));
+      })
+      .catch(() => {
+        this.setState((s) => ({ replyStatus: { ...s.replyStatus, [id]: "error" } }));
+      });
   }
 
   set(path, val) {
@@ -1006,17 +1048,27 @@ class Component extends DCLogic {
         onTr: (e) => this.set("routes." + r.key + ".tr", this.slug(e.target.value)),
         onEn: (e) => this.set("routes." + r.key + ".en", this.slug(e.target.value))
       })),
-      msgList: s.messages.map((m, i) => ({
-        ...m,
-        excerpt: m.body,
-        weight: m.read ? 500 : 800,
-        dotCss: "width:8px;height:8px;background:" + (m.read ? "transparent" : "#ec3013"),
-        mailto: "mailto:" + m.email,
-        toggle: () => this.setState((st) => ({
-          messages: st.messages.map((x, j) => j === i ? { ...x, open: !x.open, read: true } : x)
-        }), () => this.persistMsgs()),
-        del: () => this.setState((st) => ({ messages: st.messages.filter((_, j) => j !== i) }), () => this.persistMsgs())
-      })),
+      msgList: s.messages.map((m, i) => {
+        const status = (s.replyStatus || {})[m.id];
+        return {
+          ...m,
+          excerpt: m.body,
+          weight: m.read ? 500 : 800,
+          dotCss: "width:8px;height:8px;background:" + (m.read ? "transparent" : "#ec3013"),
+          mailto: "mailto:" + m.email,
+          toggle: () => this.setState((st) => ({
+            messages: st.messages.map((x, j) => j === i ? { ...x, open: !x.open, read: true } : x)
+          }), () => this.persistMsgs()),
+          del: () => this.setState((st) => ({ messages: st.messages.filter((_, j) => j !== i) }), () => this.persistMsgs()),
+          replyValue: (s.replyDrafts || {})[m.id] || "",
+          onReplyChange: (e) => this.setReplyDraft(m.id, e.target.value),
+          doSendReply: () => this.sendReply(m.id),
+          sending: status === "sending",
+          sendLabel: status === "sending" ? "Gönderiliyor…" : "Yanıtı gönder",
+          replyOk: status === "sent",
+          replyError: status === "error"
+        };
+      }),
       noMessages: s.messages.length === 0
     };
   }
