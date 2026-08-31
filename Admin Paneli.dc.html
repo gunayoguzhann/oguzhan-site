@@ -906,7 +906,7 @@ class Component extends DCLogic {
             del: () => this.setShot(i, j, "")
           };
         }),
-        previewHref: "Gizlilik Politikasi.dc.html?app=" + this.slug(p.name),
+        previewHref: p.domain ? "https://" + p.domain + "/gizlilikpolitikasi" : "Gizlilik Politikasi.dc.html?app=" + this.slug(p.name),
         onName: (e) => this.setState((st) => {
           const c = JSON.parse(JSON.stringify(st));
           const p = c.projects[i];

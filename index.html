@@ -640,10 +640,13 @@ class Component extends DCLogic {
         : "[ full description pending — what the app does, who it is for, key features ]"),
       links: (() => {
         const sl = (p.name || "").toLowerCase().replace(/ç/g, "c").replace(/ğ/g, "g").replace(/ı/g, "i").replace(/ö/g, "o").replace(/ş/g, "s").replace(/ü/g, "u").replace(/[^a-z0-9]/g, "");
+        const privacyHref = p.domain
+          ? "https://" + p.domain + "/" + (tr ? "gizlilikpolitikasi" : "privacypolicy")
+          : "Gizlilik Politikasi.dc.html?app=" + sl;
         const l = [
           { label: "App Store", href: p.appstore || "#" },
           { label: "Google Play", href: p.play || "#" },
-          { label: tr ? "Gizlilik politikası" : "Privacy policy", href: "Gizlilik Politikasi.dc.html?app=" + sl }
+          { label: tr ? "Gizlilik politikası" : "Privacy policy", href: privacyHref }
         ];
         if (p.kvkkOn || (p.kvkk || "").trim()) l.push({ label: tr ? "KVKK Aydınlatma Metni" : "KVKK Disclosure", href: "Gizlilik Politikasi.dc.html?app=" + sl + "&doc=kvkk" });
         (p.extra || []).forEach((x) => {
