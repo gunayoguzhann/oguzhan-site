@@ -1,2 +1,8 @@
 /admin   /Admin%20Paneli.dc   200
 /admin/  /Admin%20Paneli.dc   200
+
+# SPA fallback for admin-editable page links (e.g. /anasayfa, /hakkinda,
+# /home, /about) — only applies when no real file matches the path, so
+# existing static files (support.js, _ds/*, the .dc.html pages, uploads)
+# keep being served as themselves.
+/*       /index.html          200

@@ -473,6 +473,12 @@ class Component extends DCLogic {
       c = res.ok ? await res.json() : null;
       this.setState({ cms: c && Object.keys(c).length ? c : null });
     } catch (e) {}
+
+    try {
+      const match = this.matchRoute(window.location.pathname, this.getRoutesFrom(c || {}));
+      if (match) this.setState({ page: match.page, lang: match.lang });
+    } catch (e) {}
+
     try {
       const q = new URLSearchParams(window.location.search).get("app");
       if (q) {
@@ -482,6 +488,58 @@ class Component extends DCLogic {
         this.setState(i >= 0 ? { page: "project", proj: i } : { page: "projects" });
       }
     } catch (e) {}
+
+    this._onPopState = () => this.handlePopState();
+    window.addEventListener("popstate", this._onPopState);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("popstate", this._onPopState);
+  }
+
+  getRoutesFrom(cms) {
+    const cr = (cms && cms.routes) || {};
+    const d = {
+      home: { tr: "anasayfa", en: "home" },
+      about: { tr: "hakkinda", en: "about" },
+      projects: { tr: "projeler", en: "projects" },
+      contact: { tr: "iletisim", en: "contact" }
+    };
+    const out = {};
+    Object.keys(d).forEach((p) => {
+      out[p] = { tr: (cr[p] && cr[p].tr) || d[p].tr, en: (cr[p] && cr[p].en) || d[p].en };
+    });
+    return out;
+  }
+
+  matchRoute(pathname, routes) {
+    const slug = (pathname || "/").replace(/^\/+|\/+$/g, "").toLowerCase();
+    if (!slug) return null;
+    for (const p of Object.keys(routes)) {
+      if (routes[p].tr.toLowerCase() === slug) return { page: p, lang: "tr" };
+      if (routes[p].en.toLowerCase() === slug) return { page: p, lang: "en" };
+    }
+    return null;
+  }
+
+  currentLangCode() {
+    return this.state.lang ?? (this.props.defaultLang ?? "tr");
+  }
+
+  pushRouteUrl(page, langCode) {
+    if (typeof window === "undefined") return;
+    const routes = this.getRoutesFrom(this.state.cms || {});
+    const slug = routes[page] && routes[page][langCode];
+    if (!slug) return;
+    const path = "/" + slug;
+    if (window.location.pathname !== path) {
+      window.history.pushState({ page, lang: langCode }, "", path + window.location.search);
+    }
+  }
+
+  handlePopState() {
+    const match = this.matchRoute(window.location.pathname, this.getRoutesFrom(this.state.cms || {}));
+    this.setState(match ? { page: match.page, lang: match.lang } : { page: "home" });
   }
 
   openProject(i) {
@@ -491,7 +549,10 @@ class Component extends DCLogic {
 
   go(page) {
     this.setState({ page, menuOpen: false });
-    if (typeof window !== "undefined") window.scrollTo(0, 0);
+    if (typeof window !== "undefined") {
+      window.scrollTo(0, 0);
+      this.pushRouteUrl(page, this.currentLangCode());
+    }
   }
 
   toggleMenu() {
@@ -631,8 +692,8 @@ class Component extends DCLogic {
       nextName: projects[ni].name,
       goNext: () => this.openProject(ni),
       trBtn: seg(tr), enBtn: seg(!tr),
-      setTr: () => this.setState({ lang: "tr" }),
-      setEn: () => this.setState({ lang: "en" }),
+      setTr: () => { this.setState({ lang: "tr" }); this.pushRouteUrl(page, "tr"); },
+      setEn: () => { this.setState({ lang: "en" }); this.pushRouteUrl(page, "en"); },
       showBanner: (this.props.showClosingBanner ?? true) && page !== "home",
       isHome: page === "home", isAbout: page === "about",
       isProjects: page === "projects", isContact: page === "contact",

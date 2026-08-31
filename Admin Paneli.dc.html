@@ -137,6 +137,7 @@
       <button onClick="{{ tabProjectsGo }}" style="{{ tabProjectsCss }}" style-hover="background:#ffe0d9;color:#ae1800">Projeler</button>
       <button onClick="{{ tabAccountsGo }}" style="{{ tabAccountsCss }}" style-hover="background:#ffe0d9;color:#ae1800">Hesaplar</button>
       <button onClick="{{ tabContactGo }}" style="{{ tabContactCss }}" style-hover="background:#ffe0d9;color:#ae1800">İletişim</button>
+      <button onClick="{{ tabLinksGo }}" style="{{ tabLinksCss }}" style-hover="background:#ffe0d9;color:#ae1800">Sayfa linkleri</button>
       <button onClick="{{ tabMessagesGo }}" style="{{ tabMessagesCss }}" style-hover="background:#ffe0d9;color:#ae1800">
         <span>Mesajlar</span>
         <sc-if value="{{ hasUnread }}" hint-placeholder-val="{{ true }}"><span style="background:#ec3013;color:#fff;font-size:11px;font-weight:800;padding:2px 7px;margin-left:auto">{{ unreadCount }}</span></sc-if>
@@ -422,6 +423,27 @@
       </div>
     </sc-if>
 
+    <sc-if value="{{ isLinks }}">
+      <div style="display:flex;flex-direction:column;gap:24px;max-width:820px">
+        <p style="margin:0;font-size:14px;line-height:1.6;color:#605d5d;max-width:64ch">Her sayfanın Türkçe ve İngilizce ayrı bir adresi olsun — örneğin anasayfa için <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px">/anasayfa</span> (TR) ve <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px">/home</span> (EN). Sadece küçük harf ve rakam kullan, boşluk ve Türkçe karakterler otomatik temizlenir.</p>
+        <div style="display:flex;flex-direction:column;border-top:2px solid #201e1d">
+          <sc-for list="{{ linksList }}" as="r" hint-placeholder-count="4">
+            <div style="display:grid;grid-template-columns:110px 1fr 1fr;gap:16px;align-items:start;padding:18px 0;border-bottom:1px solid #d7d3d3">
+              <span style="font-size:13px;font-weight:800;padding-top:11px">{{ r.label }}</span>
+              <label style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#605d5d">TR — {{ r.trUrl }}</span>
+                <input value="{{ r.tr }}" onChange="{{ r.onTr }}" style="border:2px solid #201e1d;background:#f3f2f2;padding:9px 12px;font-size:13px;color:#201e1d;font-family:ui-monospace,SFMono-Regular,Menlo,monospace">
+              </label>
+              <label style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#605d5d">EN — {{ r.enUrl }}</span>
+                <input value="{{ r.en }}" onChange="{{ r.onEn }}" style="border:2px solid #201e1d;background:#f3f2f2;padding:9px 12px;font-size:13px;color:#201e1d;font-family:ui-monospace,SFMono-Regular,Menlo,monospace">
+              </label>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
     <sc-if value="{{ isMessages }}">
       <div style="display:flex;flex-direction:column;border-top:2px solid #201e1d;max-width:920px">
         <sc-for list="{{ msgList }}" as="m" hint-placeholder-count="3">
@@ -516,6 +538,12 @@ class Component extends DCLogic {
       ]
     },
     newCAccLabel: "", newCAccHref: "",
+    routes: {
+      home: { tr: "anasayfa", en: "home" },
+      about: { tr: "hakkinda", en: "about" },
+      projects: { tr: "projeler", en: "projects" },
+      contact: { tr: "iletisim", en: "contact" }
+    },
     messages: [
       { name: "Örnek Ziyaretçi", email: "ornek@mail.com", date: "28 Ağu", read: false, open: false,
         body: "Merhaba, Optiva hakkında bir önerim var. Uygulamaya karanlık mod eklemeyi düşünür müsünüz?" },
@@ -570,6 +598,12 @@ class Component extends DCLogic {
         accounts: d.accounts || s.accounts,
         contact: d.contact ? { ...s.contact, ...d.contact } : s.contact,
         photo: d.photo || null,
+        routes: d.routes ? {
+          home: { ...s.routes.home, ...(d.routes.home || {}) },
+          about: { ...s.routes.about, ...(d.routes.about || {}) },
+          projects: { ...s.routes.projects, ...(d.routes.projects || {}) },
+          contact: { ...s.routes.contact, ...(d.routes.contact || {}) }
+        } : s.routes,
         messages: Array.isArray(messages) ? messages : []
       }));
     } catch (e) {}
@@ -716,7 +750,7 @@ class Component extends DCLogic {
   renderVals() {
     const s = this.state;
     const tab = s.tab;
-    const titles = { home: "Anasayfa içeriği", about: "Hakkında / CV", projects: "Projeler", accounts: "Hesaplar & bağlantılar", contact: "İletişim sayfası", messages: "Gelen mesajlar" };
+    const titles = { home: "Anasayfa içeriği", about: "Hakkında / CV", projects: "Projeler", accounts: "Hesaplar & bağlantılar", contact: "İletişim sayfası", links: "Sayfa linkleri", messages: "Gelen mesajlar" };
     const tabCss = (on) =>
       "display:flex;align-items:center;gap:10px;width:100%;padding:13px 20px;border:0;text-align:left;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;background:" +
       (on ? "#ffe0d9" : "transparent") + ";color:" + (on ? "#ae1800" : "#201e1d") +
@@ -772,11 +806,14 @@ class Component extends DCLogic {
       tabTitle: titles[tab],
       isHome: tab === "home", isAbout: tab === "about", isProjects: tab === "projects",
       isAccounts: tab === "accounts", isMessages: tab === "messages", isContactPage: tab === "contact",
+      isLinks: tab === "links",
       tabHomeGo: goTab("home"), tabAboutGo: goTab("about"), tabProjectsGo: goTab("projects"),
       tabAccountsGo: goTab("accounts"), tabContactGo: goTab("contact"), tabMessagesGo: goTab("messages"),
+      tabLinksGo: goTab("links"),
       tabHomeCss: tabCss(tab === "home"), tabAboutCss: tabCss(tab === "about"),
       tabProjectsCss: tabCss(tab === "projects"), tabAccountsCss: tabCss(tab === "accounts"),
       tabContactCss: tabCss(tab === "contact"), tabMessagesCss: tabCss(tab === "messages"),
+      tabLinksCss: tabCss(tab === "links"),
       hasUnread: unread > 0, unreadCount: unread,
       showSave: tab !== "messages",
       savedFlash: s.savedFlash,
@@ -794,7 +831,7 @@ class Component extends DCLogic {
               body: JSON.stringify({
                 home: st.home, about: st.about, projects: st.projects,
                 projectsIntro: st.projectsIntro, accounts: st.accounts,
-                contact: st.contact, photo: st.photo
+                contact: st.contact, photo: st.photo, routes: st.routes
               })
             });
             if (res.status === 401) {
@@ -954,6 +991,20 @@ class Component extends DCLogic {
           newAccLabel: "", newAccHref: ""
         }));
       },
+      linksList: [
+        { key: "home", label: "Anasayfa" },
+        { key: "about", label: "Hakkında" },
+        { key: "projects", label: "Projeler" },
+        { key: "contact", label: "İletişim" }
+      ].map((r) => ({
+        label: r.label,
+        tr: s.routes[r.key].tr,
+        en: s.routes[r.key].en,
+        trUrl: "oguzhangunay.com/" + s.routes[r.key].tr,
+        enUrl: "oguzhangunay.com/" + s.routes[r.key].en,
+        onTr: (e) => this.set("routes." + r.key + ".tr", this.slug(e.target.value)),
+        onEn: (e) => this.set("routes." + r.key + ".en", this.slug(e.target.value))
+      })),
       msgList: s.messages.map((m, i) => ({
         ...m,
         excerpt: m.body,
