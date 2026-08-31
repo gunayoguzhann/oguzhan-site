@@ -2,15 +2,12 @@ name = "oguzhangunay-site"
 compatibility_date = "2026-08-01"
 pages_build_output_dir = "."
 
-# Bound in the Cloudflare Pages dashboard under
-# Settings > Functions > KV namespace bindings (binding name: SITE_KV).
-# This local declaration only matters for `wrangler pages dev`.
-[[kv_namespaces]]
-binding = "SITE_KV"
-id = "local-dev-placeholder"
-
-# Bound in the Cloudflare Pages dashboard under
-# Settings > Functions > R2 bucket bindings (binding name: SITE_IMAGES).
-[[r2_buckets]]
-binding = "SITE_IMAGES"
-bucket_name = "oguzhan-site-images"
+# KV (binding: SITE_KV) and R2 (binding: SITE_IMAGES) are bound via the
+# Cloudflare Pages dashboard (Settings > Bindings) for the deployed site —
+# intentionally NOT declared here. Cloudflare Pages reads this file during
+# real deployments (not just local dev), and a placeholder/fake resource ID
+# here breaks the actual deploy ("Invalid KV namespace ID").
+#
+# For local testing with `wrangler pages dev`, pass bindings as CLI flags
+# instead of putting them in this file:
+#   wrangler pages dev . --kv SITE_KV --r2 SITE_IMAGES
