@@ -486,6 +486,9 @@ class Component extends DCLogic {
         const list = (c && c.projects && c.projects.length) ? c.projects : [{ name: "Optiva" }, { name: "Picolori" }];
         const i = list.findIndex((p) => slug(p.name) === q);
         this.setState(i >= 0 ? { page: "project", proj: i } : { page: "projects" });
+      } else {
+        const pi = this.matchProjectDomain(window.location.hostname, (c && c.projects) || []);
+        if (pi >= 0) this.setState({ page: "project", proj: pi });
       }
     } catch (e) {}
 
@@ -524,6 +527,12 @@ class Component extends DCLogic {
       if (hit) return { page: hit.page, lang: hit.lang };
     }
     return null;
+  }
+
+  matchProjectDomain(hostname, projects) {
+    const host = (hostname || "").toLowerCase().replace(/^www\./, "");
+    if (!host || host === "oguzhangunay.com") return -1;
+    return projects.findIndex((p) => (p.domain || "").toLowerCase() === host);
   }
 
   currentLangCode() {

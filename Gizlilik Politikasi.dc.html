@@ -88,6 +88,11 @@ class Component extends DCLogic {
 
   async componentDidMount() {
     try {
+      const path = (window.location.pathname || "").replace(/^\/+|\/+$/g, "").toLowerCase();
+      if (path === "gizlilikpolitikasi") this.setState({ lang: "tr" });
+      else if (path === "privacypolicy") this.setState({ lang: "en" });
+    } catch (e) {}
+    try {
       const res = await fetch("/api/content");
       const c = res.ok ? await res.json() : null;
       this.setState({ cms: c && Object.keys(c).length ? c : null });
@@ -115,9 +120,19 @@ class Component extends DCLogic {
       doc = q.get("doc") || "";
     } catch (e) {}
     const isSite = want === "site";
-    const app = isSite
-      ? { name: "oguzhangunay.com", domain: "oguzhangunay.com", privacy: "", kvkk: "" }
-      : (projects.find((p) => this.slug(p.name) === want) || projects[0]);
+    let app;
+    if (isSite) {
+      app = { name: "oguzhangunay.com", domain: "oguzhangunay.com", privacy: "", kvkk: "" };
+    } else if (want) {
+      app = projects.find((p) => this.slug(p.name) === want) || projects[0];
+    } else {
+      // No ?app= param — likely reached via a project's own subdomain
+      // (e.g. optiva.oguzhangunay.com/gizlilikpolitikasi). Resolve the
+      // project from the hostname instead.
+      let host = "";
+      try { host = (window.location.hostname || "").toLowerCase().replace(/^www\./, ""); } catch (e) {}
+      app = projects.find((p) => (p.domain || "").toLowerCase() === host) || projects[0];
+    }
     const name = app.name || "Uygulama";
     const kvkkText = (app.kvkk || "").trim();
     const isKvkk = doc === "kvkk";

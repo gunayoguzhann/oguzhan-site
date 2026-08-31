@@ -1,6 +1,12 @@
 /admin   /Admin%20Paneli.dc   200
 /admin/  /Admin%20Paneli.dc   200
 
+# Clean privacy-policy paths on a project's subdomain (e.g.
+# optiva.oguzhangunay.com/gizlilikpolitikasi). The page itself resolves
+# which project from the hostname it's served on.
+/gizlilikpolitikasi   /Gizlilik%20Politikasi.dc   200
+/privacypolicy        /Gizlilik%20Politikasi.dc   200
+
 # SPA fallback for admin-editable page links (e.g. /anasayfa, /hakkinda,
 # /home, /about) — only applies when no real file matches the path, so
 # existing static files (support.js, _ds/*, the .dc.html pages, uploads)
