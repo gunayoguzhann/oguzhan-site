@@ -485,6 +485,12 @@ class Component extends DCLogic {
         const slug = (t) => (t || "").toLowerCase().replace(/ç/g, "c").replace(/ğ/g, "g").replace(/ı/g, "i").replace(/ö/g, "o").replace(/ş/g, "s").replace(/ü/g, "u").replace(/[^a-z0-9]/g, "");
         const list = (c && c.projects && c.projects.length) ? c.projects : [{ name: "Optiva" }, { name: "Picolori" }];
         const i = list.findIndex((p) => slug(p.name) === q);
+        const found = i >= 0 ? list[i] : null;
+        const currentHost = window.location.hostname.toLowerCase().replace(/^www\./, "");
+        if (found && found.domain && found.domain.toLowerCase() !== currentHost) {
+          window.location.href = "https://" + found.domain + "/";
+          return;
+        }
         this.setState(i >= 0 ? { page: "project", proj: i } : { page: "projects" });
       } else {
         const pi = this.matchProjectDomain(window.location.hostname, (c && c.projects) || []);
@@ -563,13 +569,13 @@ class Component extends DCLogic {
   }
 
   openProject(i) {
-    const subIdx = this.currentSubdomainProject();
-    if (subIdx >= 0 && subIdx !== i) {
-      const projects = (this.state.cms && this.state.cms.projects) || [];
-      const target = projects[i];
-      // A different project's subdomain — send the visitor to its own
-      // address instead of showing it under this project's domain.
-      if (target && target.domain && typeof window !== "undefined") {
+    const projects = (this.state.cms && this.state.cms.projects) || [];
+    const target = projects[i];
+    if (target && target.domain && typeof window !== "undefined") {
+      const currentHost = window.location.hostname.toLowerCase().replace(/^www\./, "");
+      // Send visitors to the project's own subdomain instead of showing it
+      // inline — unless we're already sitting on that exact subdomain.
+      if (currentHost !== target.domain.toLowerCase()) {
         window.location.href = "https://" + target.domain + "/";
         return;
       }
