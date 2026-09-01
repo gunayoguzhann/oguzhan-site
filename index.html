@@ -654,7 +654,7 @@ class Component extends DCLogic {
     const ch = cms.home || {}, ca = cms.about || {};
     const introFull = tr
       ? (ch.intro || "İyi dijital ürün; doğru soru, karmaşığı sadeleştirmek ve özen göstermekle başlar. Ben fikirleri, insanların gerçekten kullanmak isteyeceği deneyimlere dönüştürüyorum.")
-      : "A good digital product starts with asking the right question, simplifying the complex and caring about the details. I turn ideas into experiences people genuinely want to use.";
+      : "I turn ideas into experiences people genuinely want to use.";
     const introSplit = introFull.indexOf(". ");
     const heroIntro1 = introSplit >= 0 ? introFull.slice(0, introSplit + 1) : introFull;
     const heroIntro2 = introSplit >= 0 ? introFull.slice(introSplit + 2) : "";
