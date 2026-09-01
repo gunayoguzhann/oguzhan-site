@@ -74,7 +74,7 @@
     <div class="container" style="max-width:1320px;margin:0 auto;padding:0 32px;display:flex;align-items:stretch;justify-content:space-between;gap:32px;height:68px">
       <a href="#top" onClick="{{ goHome }}" style="display:flex;align-items:center;gap:14px">
         <span onClick="{{ triggerNguAnim }}" style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#ec3013;color:#fff;font-weight:900;font-size:13px;letter-spacing:.04em;cursor:pointer">NGU</span>
-        <span style="font-weight:700;font-size:15px;letter-spacing:-0.01em">Oğuzhan Günay</span>
+        <span style="font-weight:700;font-size:15px;letter-spacing:-0.01em">{{ brandName }}</span>
       </a>
       <nav class="nav-desktop" style="display:flex;align-items:center;gap:0">
         <button onClick="{{ goHome }}" style="{{ navHome }}" style-hover="background:#ffe0d9;color:#ae1800"><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Anasayfa</sc-if><sc-if value="{{ en }}">Home</sc-if></button>
@@ -445,7 +445,7 @@
 
   <footer style="border-top:2px solid #201e1d;background:#f3f2f2">
     <div class="container" style="max-width:1320px;margin:0 auto;padding:28px 32px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between">
-      <button onClick="{{ goHome }}" style="font-size:13px;color:#605d5d;background:transparent;border:0;padding:0;cursor:pointer;font-family:inherit" style-hover="color:#ae1800">© 2026 Oğuzhan Günay — oguzhangunay.com</button>
+      <button onClick="{{ goHome }}" style="font-size:13px;color:#605d5d;background:transparent;border:0;padding:0;cursor:pointer;font-family:inherit" style-hover="color:#ae1800">© 2026 {{ brandName }} — oguzhangunay.com</button>
       <div style="display:flex;align-items:center;gap:24px">
         <a href="{{ sitePrivacyHref }}" style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#605d5d" style-hover="color:#ae1800"><sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Gizlilik Politikası</sc-if><sc-if value="{{ en }}">Privacy Policy</sc-if></a>
         <a href="{{ siteKvkkHref }}" style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#605d5d" style-hover="color:#ae1800">KVKK</a>
@@ -720,6 +720,7 @@ class Component extends DCLogic {
       kicker: tr ? (ch.kicker || "Makine mühendisi · Optisyen · Uygulama geliştirici") : "Mechanical engineer · Optician · App developer",
       heroName1: tr ? "Oğuzhan" : "Oguzhan",
       heroName2: tr ? "Günay" : "Gunay",
+      brandName: tr ? "Oğuzhan Günay" : "Oguzhan Gunay",
       heroIntro1, heroIntro2,
       stairL1: tr ? (ch.l1 || "Pazar günü Netflix") : "Sunday Netflix",
       stairL2: tr ? (ch.l2 || "izleyenden") : "binge-watchers",
