@@ -718,7 +718,7 @@ class Component extends DCLogic {
     // so it can only be trusted in tr mode; en always falls back to the
     // translated defaults above rather than showing untranslated Turkish.
     const eduSrc = tr ? ((ca.edu && ca.edu.length) ? ca.edu : eduDef) : eduDef;
-    const posterText = (tr && ch.poster) ? ch.poster : (tr ? "Her gün bir adım daha..." : "One more step, every day...");
+    const posterText = tr ? (ch.poster || "Her gün bir adım daha...") : "Never give up";
     const pi = Math.min(this.state.proj, projects.length - 1);
     const ni = (pi + 1) % projects.length;
 
