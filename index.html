@@ -171,14 +171,7 @@
 
   <div class="poster-block" style="background:#f0bf00;color:#201e1d;padding:76px 0 88px;border-top:2px solid #201e1d;border-bottom:2px solid #201e1d">
     <div class="container" style="max-width:1320px;margin:0 auto;padding:0 32px">
-      <div style="display:flex;flex-direction:column">
-        <span style="font-weight:900;font-size:clamp(38px,7.2vw,112px);line-height:0.92;letter-spacing:-0.035em">
-{{ posterL1 }}
-        </span>
-        <span style="font-weight:900;font-size:clamp(38px,7.2vw,112px);line-height:0.92;letter-spacing:-0.035em;margin-left:22%">
-{{ posterL2 }}
-        </span>
-      </div>
+      <span style="font-weight:900;font-size:clamp(38px,7.2vw,112px);line-height:0.92;letter-spacing:-0.035em">{{ posterText }}</span>
     </div>
   </div>
 
@@ -717,15 +710,7 @@ class Component extends DCLogic {
     // so it can only be trusted in tr mode; en always falls back to the
     // translated defaults above rather than showing untranslated Turkish.
     const eduSrc = tr ? ((ca.edu && ca.edu.length) ? ca.edu : eduDef) : eduDef;
-    const posterDef1 = tr ? "Her gün bir" : "One more step,";
-    const posterDef2 = tr ? "adım daha..." : "every day...";
-    let posterL1 = posterDef1, posterL2 = posterDef2;
-    if (tr && ch.poster) {
-      const w = ch.poster.trim().split(/\s+/);
-      const half = Math.ceil(w.length / 2);
-      posterL1 = w.slice(0, half).join(" ");
-      posterL2 = w.slice(half).join(" ") || " ";
-    }
+    const posterText = (tr && ch.poster) ? ch.poster : (tr ? "Her gün bir adım daha..." : "One more step, every day...");
     const pi = Math.min(this.state.proj, projects.length - 1);
     const ni = (pi + 1) % projects.length;
 
@@ -737,7 +722,7 @@ class Component extends DCLogic {
       stairL1: tr ? (ch.l1 || "Pazar günü Netflix") : "Sunday Netflix",
       stairL2: tr ? (ch.l2 || "izleyenden") : "binge-watchers",
       stairL3: tr ? (ch.l3 || "girişimci olmaz.") : "don't build companies.",
-      posterL1, posterL2,
+      posterText,
       useCmsQuote: tr && !!ch.quote, useDefQuote: !(tr && ch.quote),
       quoteText: ch.quote || "",
       quoteBy: ch.quoteBy || "Reid Hoffman",
