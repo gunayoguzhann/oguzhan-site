@@ -678,8 +678,8 @@ class Component extends DCLogic {
         };
       }),
       domain: p.domain || "—",
-      note: p.desc || (tr ? "[ açıklama eklenecek ]" : "[ description pending ]"),
-      detail: p.desc || (tr
+      note: (tr ? p.desc : p.descEn) || (tr ? "[ açıklama eklenecek ]" : "[ description pending ]"),
+      detail: (tr ? p.desc : p.descEn) || (tr
         ? "[ detaylı açıklama eklenecek — uygulamanın ne yaptığı, kimin için olduğu, öne çıkan özellikleri ]"
         : "[ full description pending — what the app does, who it is for, key features ]"),
       links: (() => {

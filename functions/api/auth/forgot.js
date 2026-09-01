@@ -41,6 +41,7 @@ export async function onRequestPost({ request, env }) {
         ctaLabel: "Şifreni Sıfırla",
         ctaUrl: resetUrl,
         navLinks: await getSiteNavLinks(env, "tr"),
+        lang: "tr",
       }),
     });
   } catch (e) {

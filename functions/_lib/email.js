@@ -60,10 +60,16 @@ async function getSiteNavLinks(env, lang) {
   ];
 }
 
+const ATTRIBUTION = {
+  tr: "Bu e-posta oguzhangunay.com üzerinden otomatik olarak gönderildi.",
+  en: "This email was sent automatically via oguzhangunay.com.",
+};
+
 // Shared branded layout for every transactional email the site sends.
 // Table-based markup on purpose: it's the layout style that renders
 // consistently across Outlook/Gmail/Apple Mail, unlike flexbox/grid.
-function emailTemplate({ preheader = "", title, bodyHtml, ctaLabel, ctaUrl, navLinks }) {
+function emailTemplate({ preheader = "", title, bodyHtml, ctaLabel, ctaUrl, navLinks, lang }) {
+  const safeLang = lang === "en" ? "en" : "tr";
   const cta = ctaUrl
     ? `<tr><td style="padding:4px 40px 32px">
          <table role="presentation" cellpadding="0" cellspacing="0"><tr>
@@ -93,7 +99,7 @@ function emailTemplate({ preheader = "", title, bodyHtml, ctaLabel, ctaUrl, navL
       : "";
 
   return `<!doctype html>
-<html lang="tr">
+<html lang="${safeLang}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -119,7 +125,7 @@ function emailTemplate({ preheader = "", title, bodyHtml, ctaLabel, ctaUrl, navL
         ${nav}
         <tr><td style="padding:8px 40px 24px">
           <div style="border-top:1px solid #d7d3d3;padding-top:16px;font-size:11px;line-height:1.6;color:#9a9696;letter-spacing:.02em">
-            Bu e-posta oguzhangunay.com üzerinden otomatik olarak gönderildi.
+            ${ATTRIBUTION[safeLang]}
           </div>
         </td></tr>
         <tr><td style="background:#ec3013;padding:26px 40px">

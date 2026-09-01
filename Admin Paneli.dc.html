@@ -305,8 +305,12 @@
                 <input value="{{ p.domain }}" onChange="{{ p.onDomain }}" style="border:2px solid #201e1d;background:#f3f2f2;padding:10px 12px;font-size:14px;color:#201e1d">
               </label>
               <label style="display:flex;flex-direction:column;gap:6px;grid-column:1/-1">
-                <span style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#605d5d">Açıklama</span>
+                <span style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#605d5d">Açıklama (TR)</span>
                 <textarea rows="2" value="{{ p.desc }}" onChange="{{ p.onDesc }}" style="border:2px solid #201e1d;background:#f3f2f2;padding:10px 12px;font-size:14px;color:#201e1d;resize:vertical"></textarea>
+              </label>
+              <label style="display:flex;flex-direction:column;gap:6px;grid-column:1/-1">
+                <span style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#605d5d">Açıklama (EN) <span style="color:#9b9797;text-transform:none;font-weight:500">(boş bırakılırsa site EN modunda "description pending" gösterir)</span></span>
+                <textarea rows="2" value="{{ p.descEn }}" onChange="{{ p.onDescEn }}" style="border:2px solid #201e1d;background:#f3f2f2;padding:10px 12px;font-size:14px;color:#201e1d;resize:vertical"></textarea>
               </label>
               <label style="display:flex;flex-direction:column;gap:6px;min-width:0">
                 <span style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#605d5d">App Store linki</span>
@@ -533,8 +537,8 @@ class Component extends DCLogic {
     },
     projectsIntro: "Her uygulamanın kendi gizlilik politikası sayfası, alt alan adı üzerinden yayınlanır.",
     projects: [
-      { name: "Optiva", desc: "", domain: "optiva.oguzhangunay.com", appstore: "", play: "" },
-      { name: "Picolori", desc: "", domain: "picolori.oguzhangunay.com", appstore: "", play: "" }
+      { name: "Optiva", desc: "", descEn: "", domain: "optiva.oguzhangunay.com", appstore: "", play: "" },
+      { name: "Picolori", desc: "", descEn: "", domain: "picolori.oguzhangunay.com", appstore: "", play: "" }
     ],
     accounts: [
       { label: "GitHub", href: "https://github.com/gunayoguzhann" },
@@ -989,13 +993,15 @@ class Component extends DCLogic {
         kvkkOn: !!p.kvkkOn,
         onKvkkOn: (e) => this.set("projects." + i + ".kvkkOn", e.target.checked),
         onDesc: (e) => this.set("projects." + i + ".desc", e.target.value),
+        descEn: p.descEn || "",
+        onDescEn: (e) => this.set("projects." + i + ".descEn", e.target.value),
         onDomain: (e) => this.set("projects." + i + ".domain", e.target.value),
         onAppstore: (e) => this.set("projects." + i + ".appstore", e.target.value),
         onPlay: (e) => this.set("projects." + i + ".play", e.target.value),
         del: () => this.setState((st) => ({ projects: st.projects.filter((_, j) => j !== i) }))
       })),
       addProject: () => this.setState((st) => ({
-        projects: [...st.projects, { name: "", desc: "", domain: "", appstore: "", play: "", privacy: "", kvkk: "", kvkkOn: false }]
+        projects: [...st.projects, { name: "", desc: "", descEn: "", domain: "", appstore: "", play: "", privacy: "", kvkk: "", kvkkOn: false }]
       })),
       accList: s.accounts.map((a, i) => ({
         ...a,

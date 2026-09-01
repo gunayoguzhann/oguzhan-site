@@ -10,6 +10,11 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
+const NOTIFY_TEXT = {
+  tr: { subject: "Yeni mesaj: ", intro: " iletişim formundan yeni bir mesaj gönderdi.", name: "İsim", email: "E-posta", message: "Mesaj", title: "Yeni bir mesajın var", cta: "Admin Panelini Aç" },
+  en: { subject: "New message: ", intro: " sent a new message from the contact form.", name: "Name", email: "Email", message: "Message", title: "You have a new message", cta: "Open Admin Panel" },
+};
+
 export async function onRequestGet({ request, env }) {
   const session = await requireAuth(request, env);
   if (!session) return json({ error: "Unauthorized" }, { status: 401 });
@@ -53,25 +58,27 @@ export async function onRequestPost({ request, env }) {
       const safeEmail = /^\S+@\S+\.\S+$/.test(email) ? email : null;
       const origin = new URL(request.url).origin;
       const displayName = escapeHtml(name || "İsimsiz");
+      const t = NOTIFY_TEXT[lang];
       const bodyHtml =
-        `<p style="margin:0 0 16px"><strong>${displayName}</strong> iletişim formundan yeni bir mesaj gönderdi.</p>` +
+        `<p style="margin:0 0 16px"><strong>${displayName}</strong>${t.intro}</p>` +
         `<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;margin:0 0 16px;border:1px solid #d7d3d3">` +
-        `<tr><td style="padding:10px 14px;border-bottom:1px solid #d7d3d3;width:80px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#7d7979">İsim</td><td style="padding:10px 14px;border-bottom:1px solid #d7d3d3;font-size:14px;color:#201e1d">${displayName}</td></tr>` +
-        `<tr><td style="padding:10px 14px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#7d7979">E-posta</td><td style="padding:10px 14px;font-size:14px;color:#201e1d">${escapeHtml(email || "—")}</td></tr>` +
+        `<tr><td style="padding:10px 14px;border-bottom:1px solid #d7d3d3;width:80px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#7d7979">${t.name}</td><td style="padding:10px 14px;border-bottom:1px solid #d7d3d3;font-size:14px;color:#201e1d">${displayName}</td></tr>` +
+        `<tr><td style="padding:10px 14px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#7d7979">${t.email}</td><td style="padding:10px 14px;font-size:14px;color:#201e1d">${escapeHtml(email || "—")}</td></tr>` +
         `</table>` +
-        `<p style="margin:0 0 4px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#7d7979">Mesaj</p>` +
+        `<p style="margin:0 0 4px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#7d7979">${t.message}</p>` +
         `<p style="margin:0;white-space:pre-wrap">${escapeHtml(text)}</p>`;
       await sendEmail(env, {
         to: account.email,
         replyTo: safeEmail || undefined,
-        subject: "Yeni mesaj: " + (name || "İsimsiz"),
+        subject: t.subject + (name || "İsimsiz"),
         html: emailTemplate({
           preheader: text.slice(0, 120),
-          title: "Yeni bir mesajın var",
+          title: t.title,
           bodyHtml,
-          ctaLabel: "Admin Panelini Aç",
+          ctaLabel: t.cta,
           ctaUrl: `${origin}/admin`,
           navLinks: await getSiteNavLinks(env, lang),
+          lang,
         }),
       });
     }

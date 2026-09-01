@@ -10,6 +10,11 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
+const REPLY_TEXT = {
+  tr: { subject: "Mesajınıza yanıt", title: "Mesajına bir yanıt geldi", yourMessage: "Senin mesajın" },
+  en: { subject: "Reply to your message", title: "You got a reply", yourMessage: "Your message" },
+};
+
 export async function onRequestPost({ request, env }) {
   const session = await requireAuth(request, env);
   if (!session) return json({ error: "Unauthorized" }, { status: 401 });
@@ -37,11 +42,13 @@ export async function onRequestPost({ request, env }) {
 
   const accountRaw = await env.SITE_KV.get("admin:account");
   const account = accountRaw ? JSON.parse(accountRaw) : null;
+  const lang = message.lang === "en" ? "en" : "tr";
+  const t = REPLY_TEXT[lang];
 
   const bodyHtml =
     `<p style="margin:0 0 20px;white-space:pre-wrap">${escapeHtml(reply)}</p>` +
     `<div style="border-left:3px solid #d7d3d3;padding-left:14px">` +
-    `<p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#9a9696">Senin mesajın</p>` +
+    `<p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#9a9696">${t.yourMessage}</p>` +
     `<p style="margin:0;font-size:13px;color:#7d7979;white-space:pre-wrap">${escapeHtml(message.body || "")}</p>` +
     `</div>`;
 
@@ -49,12 +56,13 @@ export async function onRequestPost({ request, env }) {
     await sendEmail(env, {
       to: message.email,
       replyTo: account ? account.email : undefined,
-      subject: "Mesajınıza yanıt",
+      subject: t.subject,
       html: emailTemplate({
         preheader: reply.slice(0, 120),
-        title: "Mesajına bir yanıt geldi",
+        title: t.title,
         bodyHtml,
-        navLinks: await getSiteNavLinks(env, message.lang === "en" ? "en" : "tr"),
+        navLinks: await getSiteNavLinks(env, lang),
+        lang,
       }),
     });
   } catch (e) {
