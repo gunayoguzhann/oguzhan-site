@@ -464,6 +464,14 @@
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;defaultLang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;tr&quot;,&quot;en&quot;],&quot;default&quot;:&quot;tr&quot;,&quot;tsType&quot;:&quot;'tr' | 'en'&quot;},&quot;showClosingBanner&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+// Fixed English translations for the current projects' Turkish descriptions,
+// used until the admin fills in a project's own "Açıklama (EN)" field (which
+// always takes priority — see the note/detail fallback below).
+const KNOWN_PROJECT_DESC_EN = {
+  optiva: "Optiva is a digital platform that gives optical professionals fast, organized access to trade content, product information, and price lists.",
+  picolori: "Picolori is a digital coloring app that lets users of all ages discover different drawings, color them in any palette they like, and save their work.",
+};
+
 // Account labels are admin-authored free text with no per-language field.
 // Brand names (GitHub, Instagram...) don't need translating, but generic
 // words like "E-posta" do when the site is switched to English.
@@ -678,8 +686,9 @@ class Component extends DCLogic {
         };
       }),
       domain: p.domain || "—",
-      note: (tr ? p.desc : p.descEn) || (tr ? "[ açıklama eklenecek ]" : "[ description pending ]"),
-      detail: (tr ? p.desc : p.descEn) || (tr
+      note: (tr ? p.desc : (p.descEn || KNOWN_PROJECT_DESC_EN[(p.name || "").trim().toLowerCase()]))
+        || (tr ? "[ açıklama eklenecek ]" : "[ description pending ]"),
+      detail: (tr ? p.desc : (p.descEn || KNOWN_PROJECT_DESC_EN[(p.name || "").trim().toLowerCase()])) || (tr
         ? "[ detaylı açıklama eklenecek — uygulamanın ne yaptığı, kimin için olduğu, öne çıkan özellikleri ]"
         : "[ full description pending — what the app does, who it is for, key features ]"),
       links: (() => {
