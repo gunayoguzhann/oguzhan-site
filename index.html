@@ -121,7 +121,7 @@
       <div style="font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#ec3013;margin-bottom:32px">
 {{ kicker }}
       </div>
-      <h1 style="margin:0;font-weight:900;font-size:clamp(56px,10.5vw,168px);line-height:0.86;letter-spacing:-0.035em;text-transform:uppercase">Oğuzhan<br>Günay</h1>
+      <h1 style="margin:0;font-weight:900;font-size:clamp(56px,10.5vw,168px);line-height:0.86;letter-spacing:-0.035em;text-transform:uppercase">{{ heroName1 }}<br>{{ heroName2 }}</h1>
     </div>
 
     <div style="height:2px;background:#201e1d"></div>
@@ -718,6 +718,8 @@ class Component extends DCLogic {
       tr, en: !tr, langAttr: tr ? "tr" : "en",
       isProject: page === "project",
       kicker: tr ? (ch.kicker || "Makine mühendisi · Optisyen · Uygulama geliştirici") : "Mechanical engineer · Optician · App developer",
+      heroName1: tr ? "Oğuzhan" : "Oguzhan",
+      heroName2: tr ? "Günay" : "Gunay",
       heroIntro1, heroIntro2,
       stairL1: tr ? (ch.l1 || "Pazar günü Netflix") : "Sunday Netflix",
       stairL2: tr ? (ch.l2 || "izleyenden") : "binge-watchers",
