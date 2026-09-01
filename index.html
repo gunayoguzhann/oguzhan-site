@@ -131,7 +131,7 @@
 {{ heroIntro1 }} <span style="color:#ec3013">{{ heroIntro2 }}</span>
       </p>
       <div style="display:flex;flex-direction:column;gap:14px;align-items:flex-start">
-        <span style="font-size:15px;letter-spacing:.06em;color:#605d5d">never give up<span style="color:#ec3013"> · NGU</span></span>
+        <span onClick="{{ triggerNguAnim }}" style="font-size:15px;letter-spacing:.06em;color:#605d5d;cursor:pointer">never give up<span style="color:#ec3013"> · NGU</span></span>
         <button onClick="{{ goProjects }}" style="display:inline-flex;align-items:center;gap:12px;background:#ec3013;color:#fff;border:0;padding:14px 22px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;text-align:left" style-hover="background:#dd2b0f;color:#fff">
           <sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}">Projelere bak</sc-if><sc-if value="{{ en }}">See projects</sc-if>
         </button>
