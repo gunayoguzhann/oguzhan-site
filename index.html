@@ -464,6 +464,14 @@ const KNOWN_PROJECT_DESC_EN = {
   picolori: "Picolori is a digital coloring app that lets users of all ages discover different drawings, color them in any palette they like, and save their work.",
 };
 
+// Names (admin-authored) keep their proper Turkish spelling in tr mode, but
+// English readers expect plain ASCII — strip the diacritics rather than
+// hardcoding a translated copy that would go stale if the name is ever edited.
+function turkishToAscii(s) {
+  const map = { "ğ": "g", "Ğ": "G", "ü": "u", "Ü": "U", "ş": "s", "Ş": "S", "ı": "i", "İ": "I", "ö": "o", "Ö": "O", "ç": "c", "Ç": "C" };
+  return (s || "").replace(/[ğĞüÜşŞıİöÖçÇ]/g, (c) => map[c] || c);
+}
+
 // Account labels are admin-authored free text with no per-language field.
 // Brand names (GitHub, Instagram...) don't need translating, but generic
 // words like "E-posta" do when the site is switched to English.
@@ -737,7 +745,7 @@ class Component extends DCLogic {
       aboutClosing: tr
         ? (ca.closing || "İşimiz memleketimiz, halkımız velinimetimizdir. Allah tüm müşterilerimizden razı olsun.")
         : "This work is our homeland, our people are our purpose — may every customer we serve be content.",
-      aboutSignature: ca.signature || "Çetin Günay",
+      aboutSignature: tr ? (ca.signature || "Çetin Günay") : turkishToAscii(ca.signature || "Çetin Günay"),
       hasPhoto: !!cms.photo, noPhoto: !cms.photo,
       photoCss: "position:absolute;inset:0;width:100%;height:100%;background:url(" + cms.photo + ") center/cover;filter:grayscale(1)",
       aboutP1: tr ? (ca.p1 || "Ardından Medipol Üniversitesi'nde optisyenlik eğitimi alarak aile mesleğindeki tecrübesini akademik bilgiyle destekledi. Bugün aile şirketi Çetin Optik bünyesinde çalışmalarını sürdürmekte; emeğe saygı, müşteri memnuniyeti ve \u201cönce sağlık\u201d ilkelerini temel prensipleri olarak benimsemektedir.") : "He then studied optometry at Medipol University, building on his experience in the family trade with academic knowledge. Today he continues his work at the family company, Çetin Optik, holding respect for labour, customer satisfaction and a \u201chealth first\u201d principle as his core values.",
