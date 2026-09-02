@@ -113,6 +113,12 @@
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
+// Effective date of the generic template further down, used by every project
+// that has no authored documents of its own. A legal notice's date has to
+// track the text, not the clock — bump this whenever the generic sections or
+// the contact address in them change. (Last change: contact address, 31 Aug 2026.)
+const GENERIC_DOCS_UPDATED = { tr: "31 Ağustos 2026", en: "August 31, 2026" };
+
 // Per-project policy text, keyed by project slug. The generic sections
 // further down describe a minimal app and are wrong for an app that
 // actually uses analytics, crash reporting and subscriptions — so a
@@ -272,9 +278,6 @@ class Component extends DCLogic {
       : (tr ? (app.privacy || "").trim() : (app.privacyEn || "").trim());
     const docSet = PROJECT_DOCS[this.slug(name)];
     const projectDoc = docSet ? (isKvkk ? docSet.kvkk : docSet.privacy)[tr ? "tr" : "en"] : null;
-    const moTr = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
-    const moEn = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    const d = new Date();
     const seg = (on) =>
       "background:" + (on ? "#201e1d" : "transparent") + ";color:" + (on ? "#f3f2f2" : "#201e1d") +
       ";border:0;padding:0 12px;height:100%;font-size:12px;font-weight:700;letter-spacing:.08em;cursor:pointer";
@@ -314,9 +317,7 @@ class Component extends DCLogic {
       domain: app.domain || (this.slug(name) + ".oguzhangunay.com"),
       updated: (docSet && docSet.updated)
         ? (tr ? docSet.updated.tr : docSet.updated.en)
-        : (tr
-            ? d.getDate() + " " + moTr[d.getMonth()] + " " + d.getFullYear()
-            : moEn[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear()),
+        : (tr ? GENERIC_DOCS_UPDATED.tr : GENERIC_DOCS_UPDATED.en),
       hasCustom: !!custom, noCustom: !custom,
       customParas: custom.split(/\n\s*\n|\n/).filter(Boolean).map((t) => ({ text: t })),
       sections: (projectDoc || (isKvkk
