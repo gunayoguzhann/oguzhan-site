@@ -696,12 +696,15 @@ class Component extends DCLogic {
         const privacyHref = p.domain
           ? "https://" + p.domain + "/" + (tr ? "gizlilikpolitikasi" : "privacypolicy")
           : "Gizlilik Politikasi.dc.html?app=" + sl;
+        const kvkkHref = p.domain
+          ? "https://" + p.domain + "/" + (tr ? "kvkk" : "kvkkdisclosure")
+          : "Gizlilik Politikasi.dc.html?app=" + sl + "&doc=kvkk";
         const l = [
           { label: "App Store", href: p.appstore || "#" },
           { label: "Google Play", href: p.play || "#" },
           { label: tr ? "Gizlilik politikası" : "Privacy policy", href: privacyHref }
         ];
-        if (p.kvkkOn || (p.kvkk || "").trim()) l.push({ label: tr ? "KVKK Aydınlatma Metni" : "KVKK Disclosure", href: "Gizlilik Politikasi.dc.html?app=" + sl + "&doc=kvkk" });
+        if (p.kvkkOn || (p.kvkk || "").trim()) l.push({ label: tr ? "KVKK Aydınlatma Metni" : "KVKK Disclosure", href: kvkkHref });
         (p.extra || []).forEach((x) => {
           if ((x.label || "").trim()) l.push({ label: x.label, href: x.href || "#" });
         });
