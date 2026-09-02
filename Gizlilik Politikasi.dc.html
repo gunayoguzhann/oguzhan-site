@@ -311,7 +311,13 @@ class Component extends DCLogic {
       triggerNguAnim: (e) => this.triggerNguAnim(e),
       closeNguAnim: () => this.closeNguAnim(),
       isSiteDoc: isSite, isAppDoc: !isSite,
-      backHref: isSite ? "https://oguzhangunay.com/" : "index.html?app=" + this.slug(name),
+      // A project with its own subdomain is resolved from the hostname by
+      // index.html, so the bare domain is enough — no ?app= needed, and it
+      // lands on the right project even when the policy was opened from the
+      // main domain. Projects without a domain still need the query param.
+      backHref: isSite
+        ? "https://oguzhangunay.com/"
+        : (app.domain ? "https://" + app.domain + "/" : "index.html?app=" + this.slug(name)),
       docTitle: isKvkk ? (tr ? "KVKK Aydınlatma Metni" : "KVKK Disclosure (Turkish DPA)") : (tr ? "Gizlilik Politikası" : "Privacy Policy"),
       appName: name,
       domain: app.domain || (this.slug(name) + ".oguzhangunay.com"),
