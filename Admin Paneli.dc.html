@@ -349,8 +349,12 @@
                 </sc-for>
               </div>
               <label style="display:flex;flex-direction:column;gap:6px;grid-column:1/-1">
-                <span style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#605d5d">Gizlilik politikası metni <span style="color:#9b9797;text-transform:none;font-weight:500">(opsiyonel — boş bırakılırsa standart şablon gösterilir)</span></span>
-                <textarea rows="4" value="{{ p.privacy }}" onChange="{{ p.onPrivacy }}" placeholder="Boş paragraflar için satır atlayın. Boş bırakılırsa uygulama adıyla standart şablon kullanılır." style="border:2px solid #201e1d;background:#f3f2f2;padding:10px 12px;font-size:14px;color:#201e1d;resize:vertical"></textarea>
+                <span style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#605d5d">Gizlilik politikası metni — TR <span style="color:#9b9797;text-transform:none;font-weight:500">(opsiyonel — boş bırakılırsa standart şablon gösterilir)</span></span>
+                <textarea rows="6" value="{{ p.privacy }}" onChange="{{ p.onPrivacy }}" placeholder="Boş paragraflar için satır atlayın. Boş bırakılırsa uygulama adıyla standart şablon kullanılır." style="border:2px solid #201e1d;background:#f3f2f2;padding:10px 12px;font-size:14px;color:#201e1d;resize:vertical"></textarea>
+              </label>
+              <label style="display:flex;flex-direction:column;gap:6px;grid-column:1/-1">
+                <span style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#605d5d">Gizlilik politikası metni — EN <span style="color:#9b9797;text-transform:none;font-weight:500">(boş bırakılırsa EN'de de standart şablon gösterilir)</span></span>
+                <textarea rows="6" value="{{ p.privacyEn }}" onChange="{{ p.onPrivacyEn }}" placeholder="Empty paragraphs separate lines. Falls back to the standard template if left blank." style="border:2px solid #201e1d;background:#f3f2f2;padding:10px 12px;font-size:14px;color:#201e1d;resize:vertical"></textarea>
               </label>
               <div style="grid-column:1/-1;display:flex;flex-direction:column;gap:10px;border-top:1px solid #d7d3d3;padding-top:16px">
                 <span style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#605d5d">Özel bağlantılar <span style="color:#9b9797;text-transform:none;font-weight:500">(örn. Instagram hesabı, web sitesi)</span></span>
@@ -370,8 +374,12 @@
               </label>
               <sc-if value="{{ p.kvkkOn }}" hint-placeholder-val="{{ false }}">
                 <label style="display:flex;flex-direction:column;gap:6px;grid-column:1/-1">
-                  <span style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#605d5d">Özel KVKK metni <span style="color:#9b9797;text-transform:none;font-weight:500">(opsiyonel — yapıştırırsan standart şablonun yerine geçer)</span></span>
-                  <textarea rows="4" value="{{ p.kvkk }}" onChange="{{ p.onKvkk }}" placeholder="Boş bırakılırsa uygulama adıyla standart KVKK şablonu gösterilir." style="border:2px solid #201e1d;background:#f3f2f2;padding:10px 12px;font-size:14px;color:#201e1d;resize:vertical"></textarea>
+                  <span style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#605d5d">Özel KVKK metni — TR <span style="color:#9b9797;text-transform:none;font-weight:500">(opsiyonel — yapıştırırsan standart şablonun yerine geçer)</span></span>
+                  <textarea rows="6" value="{{ p.kvkk }}" onChange="{{ p.onKvkk }}" placeholder="Boş bırakılırsa uygulama adıyla standart KVKK şablonu gösterilir." style="border:2px solid #201e1d;background:#f3f2f2;padding:10px 12px;font-size:14px;color:#201e1d;resize:vertical"></textarea>
+                </label>
+                <label style="display:flex;flex-direction:column;gap:6px;grid-column:1/-1">
+                  <span style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#605d5d">Özel KVKK metni — EN</span>
+                  <textarea rows="6" value="{{ p.kvkkEn }}" onChange="{{ p.onKvkkEn }}" placeholder="Falls back to the standard template if left blank." style="border:2px solid #201e1d;background:#f3f2f2;padding:10px 12px;font-size:14px;color:#201e1d;resize:vertical"></textarea>
                 </label>
               </sc-if>
               <a href="{{ p.previewHref }}" style="grid-column:1/-1;justify-self:start;display:inline-flex;align-items:center;gap:10px;border:2px solid #201e1d;padding:9px 16px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase" style-hover="background:#ffe0d9;color:#ae1800">Gizlilik sayfasını gör <span style="color:#ec3013">↗</span></a>
@@ -964,8 +972,12 @@ class Component extends DCLogic {
           return c;
         }),
         onPrivacy: (e) => this.set("projects." + i + ".privacy", e.target.value),
+        privacyEn: p.privacyEn || "",
+        onPrivacyEn: (e) => this.set("projects." + i + ".privacyEn", e.target.value),
         kvkk: p.kvkk || "",
         onKvkk: (e) => this.set("projects." + i + ".kvkk", e.target.value),
+        kvkkEn: p.kvkkEn || "",
+        onKvkkEn: (e) => this.set("projects." + i + ".kvkkEn", e.target.value),
         extraList: (p.extra || []).map((x, j) => ({
           label: x.label, href: x.href,
           onLabel: (e) => this.setState((st) => {

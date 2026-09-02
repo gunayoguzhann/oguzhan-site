@@ -196,10 +196,11 @@ class Component extends DCLogic {
       app = projects.find((p) => (p.domain || "").toLowerCase() === host) || projects[0];
     }
     const name = app.name || "Uygulama";
-    const kvkkText = (app.kvkk || "").trim();
     const isKvkk = doc === "kvkk";
-    const custom = isKvkk ? kvkkText : (app.privacy || "").trim();
     const tr = this.state.lang === "tr";
+    const custom = isKvkk
+      ? (tr ? (app.kvkk || "").trim() : (app.kvkkEn || "").trim())
+      : (tr ? (app.privacy || "").trim() : (app.privacyEn || "").trim());
     const moTr = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
     const moEn = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const d = new Date();
