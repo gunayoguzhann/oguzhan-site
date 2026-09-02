@@ -120,6 +120,9 @@
 // The admin panel's custom privacy/KVKK fields still override this.
 const PROJECT_DOCS = {
   picolori: {
+    // Fixed effective date: a legal notice's date has to change only when
+    // the text does, not on every page load. Bump this when editing below.
+    updated: { tr: "2 Eylül 2026", en: "September 2, 2026" },
     privacy: {
       tr: [
         { title: "Kısaca", body: "PiColori'de hesap yoktur. Adınızı, e-postanızı ya da telefonunuzu istemiyoruz. Boyadığınız resimler ve ilerlemeniz cihazınızda kalır; hiçbir yere yüklenmez. Uygulamanın çalışması ve iyileştirilmesi için topladığımız veriler, sizi kişi olarak tanımlamayan teknik kayıtlardır. Veri sorumlusu Oğuzhan Günay'dır (Hasanpaşa Mah. Kurbağalıdere Cad. No:39/A Kadıköy/İstanbul)." },
@@ -134,7 +137,8 @@ const PROJECT_DOCS = {
         { title: "Ne Kadar Saklanıyor", body: "Cihazınızdakiler, siz uygulamayı silene kadar saklanır. Kullanım ölçümü en fazla 14 ay, çökme kayıtları 90 gün saklanır. Satın alma kayıtları, abonelik sürdüğü müddetçe ve yasal saklama süreleri boyunca tutulur." },
         { title: "Çocuklar", body: "PiColori yetişkinler için tasarlanmıştır ve çocuklara yönelik değildir. Bilerek 13 yaşından küçük çocuklardan veri toplamayız. Çocuğunuzun verisinin işlendiğini düşünüyorsanız aşağıdaki e-posta adresinden bize ulaşın; sileriz." },
         { title: "Haklarınız", body: "İşlenen verileriniz hakkında bilgi talep etme, düzeltilmesini, silinmesini ya da işlenmesine itiraz etme haklarınız vardır. Başvurularınız en geç 30 gün içinde yanıtlanır." },
-        { title: "Değişiklikler", body: "Bu politika güncellenirse yürürlük tarihi değişir ve önemli değişiklikler uygulama içinde duyurulur." }
+        { title: "Değişiklikler", body: "Bu politika güncellenirse yürürlük tarihi değişir ve önemli değişiklikler uygulama içinde duyurulur." },
+        { title: "Bu Politika Hakkında", body: "PiColori çevrimdışı çalışacak şekilde tasarlanmıştır: boyama ve kayıt işlemleri cihazınızda gerçekleşir, sunucuya yalnızca yukarıda sayılan teknik veriler ulaşır. Bu politika, 6698 sayılı Kişisel Verilerin Korunması Kanunu ve Avrupa Birliği Genel Veri Koruma Tüzüğü (GDPR) esas alınarak hazırlanmış olup uygulamanın fiilî veri işleme akışını yansıtır. Metnin Türkçe ve İngilizce sürümleri arasında farklılık bulunması hâlinde Türkçe sürüm esas alınır." }
       ],
       en: [
         { title: "In Short", body: "PiColori has no accounts. We do not ask for your name, email or phone number. The pictures you colour and your progress stay on your device and are never uploaded. What we do collect is technical data that does not identify you as a person. The data controller is Oğuzhan Günay (Hasanpaşa Mah. Kurbağalıdere Cad. No:39/A Kadıköy/Istanbul, Turkey)." },
@@ -149,7 +153,8 @@ const PROJECT_DOCS = {
         { title: "How Long We Keep It", body: "Anything on your device, until you delete the app. Usage measurement for up to 14 months, crash reports for 90 days. Purchase records for as long as the subscription lasts and any statutory retention period after it." },
         { title: "Children", body: "PiColori is made for adults and is not directed at children. We do not knowingly collect data from children under 13. If you believe a child's data has been processed, write to the address below and we will delete it." },
         { title: "Your Rights", body: "You may ask what we hold about you, ask for it to be corrected or deleted, or object to its processing. We answer within 30 days." },
-        { title: "Changes", body: "If this policy changes, the effective date changes with it, and material changes are announced in the app." }
+        { title: "Changes", body: "If this policy changes, the effective date changes with it, and material changes are announced in the app." },
+        { title: "About This Policy", body: "PiColori is built to work offline: colouring and saving happen on your device, and only the technical data listed above reaches a server. This policy was prepared on the basis of Turkish Law No. 6698 on the Protection of Personal Data and the EU General Data Protection Regulation (GDPR), and reflects the app's actual data flow. If the Turkish and English versions differ, the Turkish version prevails." }
       ]
     },
     kvkk: {
@@ -160,7 +165,8 @@ const PROJECT_DOCS = {
         { title: "Kişisel Verilerin Aktarılması", body: "Veriler, hizmetin sunulabilmesi için Google (analitik, hata raporlama ve bildirim altyapısı), RevenueCat (abonelik doğrulama), Supabase (içerik sunucusu, Frankfurt) ve ödeme işlemleri bakımından Apple ile Google'a aktarılmaktadır. Bu sağlayıcıların sunucuları yurt dışında bulunduğundan, kişisel verileriniz KVKK m.9 kapsamında yurt dışına aktarılmaktadır. Veriler yalnızca bu amaçlarla ve gerekli güvenlik önlemleri alınarak aktarılır; hiçbir şekilde satılmaz." },
         { title: "Toplama Yöntemi ve Hukuki Sebep", body: "Kişisel verileriniz, uygulamayı kullanmanız sırasında elektronik ortamda ve otomatik yollarla toplanmaktadır. Hukuki sebepleri: KVKK m.5/2-c (sözleşmenin kurulması ve ifası), m.5/2-ç (hukuki yükümlülüğün yerine getirilmesi) ve m.5/2-f (veri sorumlusunun meşru menfaati)." },
         { title: "KVKK m.11 Kapsamındaki Haklarınız", body: "Kişisel verilerinizin işlenip işlenmediğini öğrenme; işlenmişse buna ilişkin bilgi talep etme; işlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme; yurt içinde veya yurt dışında aktarıldığı üçüncü kişileri bilme; eksik veya yanlış işlenmişse düzeltilmesini isteme; silinmesini veya yok edilmesini isteme; bu işlemlerin aktarıldığı üçüncü kişilere bildirilmesini isteme; münhasıran otomatik sistemlerle analiz edilmesi suretiyle aleyhinize bir sonuç doğmasına itiraz etme; kanuna aykırı işlenmesi sebebiyle zarara uğramanız hâlinde zararın giderilmesini talep etme haklarına sahipsiniz." },
-        { title: "Başvuru", body: "Başvurularınızı aşağıdaki e-posta adresine iletebilirsiniz. Talepleriniz en geç 30 gün içinde ücretsiz olarak sonuçlandırılır." }
+        { title: "Başvuru", body: "Başvurularınızı aşağıdaki e-posta adresine iletebilirsiniz. Talepleriniz en geç 30 gün içinde ücretsiz olarak sonuçlandırılır." },
+        { title: "Bu Metin Hakkında", body: "Bu aydınlatma metni, KVKK m.10 kapsamındaki aydınlatma yükümlülüğünün yerine getirilmesi amacıyla hazırlanmıştır ve PiColori uygulamasının fiilî veri işleme akışını yansıtır. Uygulama çevrimdışı çalışacak şekilde tasarlanmış olup çizimleriniz ve boyama ilerlemeniz cihazınızdan çıkmaz. Metnin Türkçe ve İngilizce sürümleri arasında farklılık bulunması hâlinde Türkçe sürüm esas alınır." }
       ],
       en: [
         { title: "Identity of the Data Controller", body: "Under Turkish Law No. 6698 on the Protection of Personal Data (KVKK), the data controller is Oğuzhan Günay. Address: Hasanpaşa Mah. Kurbağalıdere Cad. No:39/A Kadıköy/Istanbul, Turkey. Contact: oguzhan.gny72@gmail.com." },
@@ -169,7 +175,8 @@ const PROJECT_DOCS = {
         { title: "Transfer of Personal Data", body: "The data is transferred, to the extent necessary to provide the service, to Google (analytics, crash reporting and messaging infrastructure), RevenueCat (subscription verification), Supabase (content hosting, Frankfurt) and, for payments, Apple and Google. Because these processors' servers are located abroad, your personal data is transferred internationally under Article 9 of the KVKK. Data is transferred only for these purposes and with the required security measures in place; it is never sold." },
         { title: "Method of Collection and Legal Basis", body: "Your personal data is collected electronically and automatically while you use the app. Legal bases: KVKK Art. 5/2-c (establishment and performance of a contract), Art. 5/2-ç (compliance with a legal obligation) and Art. 5/2-f (legitimate interest of the data controller)." },
         { title: "Your Rights Under Article 11 of the KVKK", body: "You have the right to learn whether your personal data is processed; to request information about it if so; to learn the purpose of processing and whether it is used accordingly; to know the third parties to whom it is transferred domestically or abroad; to request correction if incomplete or inaccurate; to request its deletion or destruction; to request that these operations be notified to third parties to whom the data was transferred; to object to a result to your detriment arising from analysis carried out exclusively through automated systems; and to request compensation for damages if you suffer loss due to unlawful processing." },
-        { title: "Applications", body: "You may submit requests to the email address below. Requests are concluded free of charge within 30 days at the latest." }
+        { title: "Applications", body: "You may submit requests to the email address below. Requests are concluded free of charge within 30 days at the latest." },
+        { title: "About This Notice", body: "This notice was prepared to fulfil the disclosure obligation under Article 10 of the KVKK and reflects the actual data processing flow of the PiColori app. The app is built to work offline; your drawings and colouring progress never leave your device. If the Turkish and English versions differ, the Turkish version prevails." }
       ]
     }
   }
@@ -305,9 +312,11 @@ class Component extends DCLogic {
       docTitle: isKvkk ? (tr ? "KVKK Aydınlatma Metni" : "KVKK Disclosure (Turkish DPA)") : (tr ? "Gizlilik Politikası" : "Privacy Policy"),
       appName: name,
       domain: app.domain || (this.slug(name) + ".oguzhangunay.com"),
-      updated: tr
-        ? d.getDate() + " " + moTr[d.getMonth()] + " " + d.getFullYear()
-        : moEn[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear(),
+      updated: (docSet && docSet.updated)
+        ? (tr ? docSet.updated.tr : docSet.updated.en)
+        : (tr
+            ? d.getDate() + " " + moTr[d.getMonth()] + " " + d.getFullYear()
+            : moEn[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear()),
       hasCustom: !!custom, noCustom: !custom,
       customParas: custom.split(/\n\s*\n|\n/).filter(Boolean).map((t) => ({ text: t })),
       sections: (projectDoc || (isKvkk
