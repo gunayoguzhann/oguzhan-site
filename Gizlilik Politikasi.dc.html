@@ -113,6 +113,68 @@
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
+// Per-project policy text, keyed by project slug. The generic sections
+// further down describe a minimal app and are wrong for an app that
+// actually uses analytics, crash reporting and subscriptions — so a
+// project that needs accurate text gets it here, in both languages.
+// The admin panel's custom privacy/KVKK fields still override this.
+const PROJECT_DOCS = {
+  picolori: {
+    privacy: {
+      tr: [
+        { title: "Kısaca", body: "PiColori'de hesap yoktur. Adınızı, e-postanızı ya da telefonunuzu istemiyoruz. Boyadığınız resimler ve ilerlemeniz cihazınızda kalır; hiçbir yere yüklenmez. Uygulamanın çalışması ve iyileştirilmesi için topladığımız veriler, sizi kişi olarak tanımlamayan teknik kayıtlardır. Veri sorumlusu Oğuzhan Günay'dır (Hasanpaşa Mah. Kurbağalıdere Cad. No:39/A Kadıköy/İstanbul)." },
+        { title: "Yalnızca Cihazınızda Kalanlar", body: "Boyama ilerlemeniz, günlük seriniz, uygulama tercihleriniz, kazandığınız içerik hakları, bitirdiğiniz resimler ve akşam hatırlatmasının zamanı yalnızca cihazınızda saklanır. Bunlar sunucularımıza gönderilmez; uygulamayı silerseniz bunlar da silinir." },
+        { title: "Kullanım Ölçümü", body: "Hangi ekranların açıldığı, oturum süresi, cihaz modeli, işletim sistemi sürümü, dil, ülke, uygulama sürümü ve uygulamaya özel rastgele bir kurulum kimliği Google Firebase Analytics aracılığıyla toplanır." },
+        { title: "Çökme Kayıtları", body: "Uygulama beklenmedik şekilde kapandığında hatanın teknik dökümü ve o andaki cihaz durumu Google Crashlytics aracılığıyla toplanır." },
+        { title: "Satın Alma Bilgisi", body: "Aboneliğinizin durumu ve cihazınıza atanmış anonim bir kullanıcı kimliği RevenueCat aracılığıyla işlenir. Kart bilginiz bize hiçbir zaman ulaşmaz; ödemeyi Apple ya da Google alır." },
+        { title: "İçerik İstekleri ve Bildirimler", body: "Uygulamada yer almayan resimleri indirirken sunucumuza giden istek ve IP adresiniz işlenir. Cihazınıza atanan bildirim kimliği de tutulur; şu anda bildirim göndermek için kullanılmamaktadır." },
+        { title: "Toplamadıklarımız", body: "Ad, e-posta, telefon numarası, adres, doğum tarihi, konum, rehber, galerinizdeki fotoğraflar ve reklam kimliği toplanmaz. Uygulamada reklam yoktur." },
+        { title: "Neden İşliyoruz", body: "Uygulamanın çalışması ve satın aldığınız içeriği size açabilmek için (sözleşmenin ifası); hataları bulup düzeltmek ve hangi özelliklerin işe yaradığını anlamak için (meşru menfaat); yasal saklama yükümlülüklerimiz için (hukuki yükümlülük)." },
+        { title: "Kimlerle Paylaşılıyor", body: "Verilerinizi satmıyoruz. Şu hizmet sağlayıcıları kullanıyoruz: Google (Firebase Analytics, Crashlytics, bildirim altyapısı), RevenueCat (abonelik yönetimi), Supabase (içerik sunucusu, Frankfurt) ve ödeme için Apple ile Google. Bu sağlayıcıların sunucuları yurt dışında bulunabilir; verileriniz bu nedenle yurt dışına aktarılabilir." },
+        { title: "Ne Kadar Saklanıyor", body: "Cihazınızdakiler, siz uygulamayı silene kadar saklanır. Kullanım ölçümü en fazla 14 ay, çökme kayıtları 90 gün saklanır. Satın alma kayıtları, abonelik sürdüğü müddetçe ve yasal saklama süreleri boyunca tutulur." },
+        { title: "Çocuklar", body: "PiColori yetişkinler için tasarlanmıştır ve çocuklara yönelik değildir. Bilerek 13 yaşından küçük çocuklardan veri toplamayız. Çocuğunuzun verisinin işlendiğini düşünüyorsanız aşağıdaki e-posta adresinden bize ulaşın; sileriz." },
+        { title: "Haklarınız", body: "İşlenen verileriniz hakkında bilgi talep etme, düzeltilmesini, silinmesini ya da işlenmesine itiraz etme haklarınız vardır. Başvurularınız en geç 30 gün içinde yanıtlanır." },
+        { title: "Değişiklikler", body: "Bu politika güncellenirse yürürlük tarihi değişir ve önemli değişiklikler uygulama içinde duyurulur." }
+      ],
+      en: [
+        { title: "In Short", body: "PiColori has no accounts. We do not ask for your name, email or phone number. The pictures you colour and your progress stay on your device and are never uploaded. What we do collect is technical data that does not identify you as a person. The data controller is Oğuzhan Günay (Hasanpaşa Mah. Kurbağalıdere Cad. No:39/A Kadıköy/Istanbul, Turkey)." },
+        { title: "Kept On Your Device Only", body: "Your colouring progress, your daily streak, your app preferences, the content you have earned, your finished pictures and the time of the evening reminder are stored only on your device. None of this reaches our servers; deleting the app deletes it." },
+        { title: "Usage Measurement", body: "Which screens are opened, session length, device model, operating system version, language, country, app version and a random installation identifier specific to this app are collected through Google Firebase Analytics." },
+        { title: "Crash Reports", body: "When the app closes unexpectedly, a technical trace of the fault and the state of the device at that moment are collected through Google Crashlytics." },
+        { title: "Purchase Status", body: "Whether a subscription is active, and an anonymous user identifier assigned to your device, are processed through RevenueCat. Your card details never reach us; payment is taken by Apple or Google." },
+        { title: "Content Requests and Notifications", body: "When a picture that is not built into the app is downloaded, the request and your IP address reach our content server. A push identifier assigned to your device is also held; it is not currently used to send anything." },
+        { title: "What We Do Not Collect", body: "No name, email, phone number, address, date of birth, location, contacts, photos from your gallery, or advertising identifier. There are no ads in the app." },
+        { title: "Why We Process It", body: "To run the app and unlock what you have bought (performance of a contract); to find and fix faults and to understand which features are used (legitimate interests); to meet retention obligations (legal obligation)." },
+        { title: "Who It Is Shared With", body: "We do not sell your data. We use these processors: Google (Firebase Analytics, Crashlytics, messaging), RevenueCat (subscriptions), Supabase (content hosting, Frankfurt) and Apple or Google for payments. Their servers may be outside your country, so your data may be transferred internationally under appropriate safeguards." },
+        { title: "How Long We Keep It", body: "Anything on your device, until you delete the app. Usage measurement for up to 14 months, crash reports for 90 days. Purchase records for as long as the subscription lasts and any statutory retention period after it." },
+        { title: "Children", body: "PiColori is made for adults and is not directed at children. We do not knowingly collect data from children under 13. If you believe a child's data has been processed, write to the address below and we will delete it." },
+        { title: "Your Rights", body: "You may ask what we hold about you, ask for it to be corrected or deleted, or object to its processing. We answer within 30 days." },
+        { title: "Changes", body: "If this policy changes, the effective date changes with it, and material changes are announced in the app." }
+      ]
+    },
+    kvkk: {
+      tr: [
+        { title: "Veri Sorumlusunun Kimliği", body: "6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) uyarınca veri sorumlusu Oğuzhan Günay'dır. Adres: Hasanpaşa Mah. Kurbağalıdere Cad. No:39/A Kadıköy/İstanbul. İletişim: oguzhan.gny72@gmail.com." },
+        { title: "İşlenen Kişisel Veriler ve Amaçları", body: "İşlem güvenliği verileri (uygulamaya özel kurulum kimliği, cihaz modeli, işletim sistemi sürümü, uygulama sürümü, dil ve ülke bilgisi, IP adresi) uygulamanın çalıştırılması, hataların giderilmesi ve hizmet kalitesinin ölçülmesi amacıyla; müşteri işlem verileri (abonelik durumu, anonim kullanıcı kimliği) satın alınan içeriğin sunulması ve abonelik yönetimi amacıyla; kullanım verileri (açılan ekranlar, oturum süresi) uygulamanın geliştirilmesi amacıyla işlenmektedir." },
+        { title: "Cihazda Kalan Veriler", body: "Uygulama içinde oluşturduğunuz çizimler, boyama ilerlemeniz ve tercihleriniz yalnızca cihazınızda saklanır; veri sorumlusuna aktarılmaz ve tarafımızca işlenmez." },
+        { title: "Kişisel Verilerin Aktarılması", body: "Veriler, hizmetin sunulabilmesi için Google (analitik, hata raporlama ve bildirim altyapısı), RevenueCat (abonelik doğrulama), Supabase (içerik sunucusu, Frankfurt) ve ödeme işlemleri bakımından Apple ile Google'a aktarılmaktadır. Bu sağlayıcıların sunucuları yurt dışında bulunduğundan, kişisel verileriniz KVKK m.9 kapsamında yurt dışına aktarılmaktadır. Veriler yalnızca bu amaçlarla ve gerekli güvenlik önlemleri alınarak aktarılır; hiçbir şekilde satılmaz." },
+        { title: "Toplama Yöntemi ve Hukuki Sebep", body: "Kişisel verileriniz, uygulamayı kullanmanız sırasında elektronik ortamda ve otomatik yollarla toplanmaktadır. Hukuki sebepleri: KVKK m.5/2-c (sözleşmenin kurulması ve ifası), m.5/2-ç (hukuki yükümlülüğün yerine getirilmesi) ve m.5/2-f (veri sorumlusunun meşru menfaati)." },
+        { title: "KVKK m.11 Kapsamındaki Haklarınız", body: "Kişisel verilerinizin işlenip işlenmediğini öğrenme; işlenmişse buna ilişkin bilgi talep etme; işlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme; yurt içinde veya yurt dışında aktarıldığı üçüncü kişileri bilme; eksik veya yanlış işlenmişse düzeltilmesini isteme; silinmesini veya yok edilmesini isteme; bu işlemlerin aktarıldığı üçüncü kişilere bildirilmesini isteme; münhasıran otomatik sistemlerle analiz edilmesi suretiyle aleyhinize bir sonuç doğmasına itiraz etme; kanuna aykırı işlenmesi sebebiyle zarara uğramanız hâlinde zararın giderilmesini talep etme haklarına sahipsiniz." },
+        { title: "Başvuru", body: "Başvurularınızı aşağıdaki e-posta adresine iletebilirsiniz. Talepleriniz en geç 30 gün içinde ücretsiz olarak sonuçlandırılır." }
+      ],
+      en: [
+        { title: "Identity of the Data Controller", body: "Under Turkish Law No. 6698 on the Protection of Personal Data (KVKK), the data controller is Oğuzhan Günay. Address: Hasanpaşa Mah. Kurbağalıdere Cad. No:39/A Kadıköy/Istanbul, Turkey. Contact: oguzhan.gny72@gmail.com." },
+        { title: "Personal Data Processed and Purposes", body: "Transaction security data (app-specific installation identifier, device model, operating system version, app version, language and country, IP address) is processed to operate the app, fix faults and measure service quality; customer transaction data (subscription status, anonymous user identifier) to deliver purchased content and manage subscriptions; usage data (screens opened, session length) to improve the app." },
+        { title: "Data Kept On The Device", body: "The drawings, colouring progress and preferences you create in the app are stored only on your device; they are not transferred to or processed by the data controller." },
+        { title: "Transfer of Personal Data", body: "The data is transferred, to the extent necessary to provide the service, to Google (analytics, crash reporting and messaging infrastructure), RevenueCat (subscription verification), Supabase (content hosting, Frankfurt) and, for payments, Apple and Google. Because these processors' servers are located abroad, your personal data is transferred internationally under Article 9 of the KVKK. Data is transferred only for these purposes and with the required security measures in place; it is never sold." },
+        { title: "Method of Collection and Legal Basis", body: "Your personal data is collected electronically and automatically while you use the app. Legal bases: KVKK Art. 5/2-c (establishment and performance of a contract), Art. 5/2-ç (compliance with a legal obligation) and Art. 5/2-f (legitimate interest of the data controller)." },
+        { title: "Your Rights Under Article 11 of the KVKK", body: "You have the right to learn whether your personal data is processed; to request information about it if so; to learn the purpose of processing and whether it is used accordingly; to know the third parties to whom it is transferred domestically or abroad; to request correction if incomplete or inaccurate; to request its deletion or destruction; to request that these operations be notified to third parties to whom the data was transferred; to object to a result to your detriment arising from analysis carried out exclusively through automated systems; and to request compensation for damages if you suffer loss due to unlawful processing." },
+        { title: "Applications", body: "You may submit requests to the email address below. Requests are concluded free of charge within 30 days at the latest." }
+      ]
+    }
+  }
+};
+
 class Component extends DCLogic {
   state = { cms: null, lang: "tr", nguAnimOpen: false };
 
@@ -201,6 +263,8 @@ class Component extends DCLogic {
     const custom = isKvkk
       ? (tr ? (app.kvkk || "").trim() : (app.kvkkEn || "").trim())
       : (tr ? (app.privacy || "").trim() : (app.privacyEn || "").trim());
+    const docSet = PROJECT_DOCS[this.slug(name)];
+    const projectDoc = docSet ? (isKvkk ? docSet.kvkk : docSet.privacy)[tr ? "tr" : "en"] : null;
     const moTr = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
     const moEn = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const d = new Date();
@@ -246,7 +310,7 @@ class Component extends DCLogic {
         : moEn[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear(),
       hasCustom: !!custom, noCustom: !custom,
       customParas: custom.split(/\n\s*\n|\n/).filter(Boolean).map((t) => ({ text: t })),
-      sections: (isKvkk
+      sections: (projectDoc || (isKvkk
         ? (tr ? [
             { title: "Veri Sorumlusu", body: "6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) uyarınca kişisel verileriniz, veri sorumlusu sıfatıyla Oğuzhan Günay tarafından aşağıda açıklanan kapsamda işlenmektedir. Bu aydınlatma metni " + name + " uygulaması için hazırlanmıştır." },
             { title: "İşlenen Kişisel Veriler", body: name + " kapsamında; cihaz bilgileri, anonim kullanım istatistikleri ve iletişim kanalları üzerinden ilettiğiniz ad-soyad ile e-posta adresi işlenebilir." },
@@ -266,7 +330,7 @@ class Component extends DCLogic {
             { title: "Rights of the Data Subject", body: "Under Article 11 of the KVKK you have the right to learn whether your data is processed, request information, request correction or deletion, know the third parties it is transferred to, and claim compensation for damages." },
             { title: "Applications", body: "You may submit requests regarding your rights via the email address below. Applications are concluded free of charge within 30 days at the latest." }
           ])
-        : (tr ? secTr : secEn)
+        : (tr ? secTr : secEn))
       ).map((s, i) => ({ ...s, n: i + 1 }))
     };
   }
